@@ -17,14 +17,22 @@ export default function AdminHeader({ admin, onLogout }) {
         <div className="h-20 flex items-center justify-between">
 
           {/* Left */}
-          <div>
-            <p className="text-sm text-slate-500">
+          <div className=" flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200">
+              <User
+                size={22}
+                className="text-white"
+              />
+            </div>
+           <div>
+             <p className="text-sm text-slate-500">
               Welcome back,
             </p>
 
             <h1 className="text-lg sm:text-xl font-bold text-slate-900">
               {admin.name} 
             </h1>
+           </div>
           </div>
 
           {/* Right */}

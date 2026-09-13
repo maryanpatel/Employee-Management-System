@@ -5,17 +5,22 @@ import {
   ClipboardList,
 } from "lucide-react";
 
-export default function QuickActions() {
+export default function QuickActions({
+  onCreateTask,
+  onAddEmployee,
+}) {
   const actions = [
     {
       title: "Create Task",
       icon: Plus,
       color: "blue",
+      onClick: onCreateTask,
     },
     {
       title: "Add Employee",
       icon: UserPlus,
       color: "indigo",
+      onClick: onAddEmployee,
     },
     {
       title: "Manage Employees",
@@ -42,19 +47,21 @@ export default function QuickActions() {
         </p>
       </div>
 
-      <div className="
-        grid
-        grid-cols-2
-        lg:grid-cols-4
-        gap-4
-      ">
-
+      <div
+        className="
+          grid
+          grid-cols-2
+          lg:grid-cols-4
+          gap-4
+        "
+      >
         {actions.map((action) => {
           const Icon = action.icon;
 
           return (
             <button
               key={action.title}
+              onClick={action.onClick}
               className="
                 bg-white
                 border
@@ -73,18 +80,19 @@ export default function QuickActions() {
                 group
               "
             >
-
-              <div className="
-                w-11
-                h-11
-                rounded-xl
-                bg-blue-50
-                flex
-                items-center
-                justify-center
-                group-hover:bg-blue-600
-                transition
-              ">
+              <div
+                className="
+                  w-11
+                  h-11
+                  rounded-xl
+                  bg-blue-50
+                  flex
+                  items-center
+                  justify-center
+                  group-hover:bg-blue-600
+                  transition
+                "
+              >
                 <Icon
                   size={21}
                   className="
@@ -98,11 +106,9 @@ export default function QuickActions() {
               <span className="text-sm font-semibold text-slate-700">
                 {action.title}
               </span>
-
             </button>
           );
         })}
-
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const adminSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     fullname: {
         type: String,
         required: true,
@@ -20,11 +20,11 @@ const adminSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin'],
-        default: 'admin',
+        enum: ['admin','employee'],
+        default: 'employee',
     }
 })
 
-const adminModel = mongoose.model("admin", adminSchema)
+const userModel = mongoose.model("user", userSchema)
 
-module.exports = adminModel
+module.exports = userModel

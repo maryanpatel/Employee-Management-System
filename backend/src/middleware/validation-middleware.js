@@ -8,6 +8,7 @@ async function validateAdmin(req, res, next){
     {
         return res.status(400).json({ errors: errors.array() })
     }
+    next()
 }
 
 const registerAdminValidationRules = [
@@ -23,9 +24,7 @@ const registerAdminValidationRules = [
     .withMessage("Password must contain at least one number")
     .matches(/[@$!%*?&]/)
     .withMessage("Password must contain at least one special character"),
-    body("phone")
-  .notEmpty()
-  .withMessage("Phone number is required")
+    body("phonenumber")
   .matches(/^[6-9]\d{9}$/)
   .withMessage("Phone number must be a valid 10-digit Indian number"),
   validateAdmin

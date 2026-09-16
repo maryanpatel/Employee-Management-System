@@ -61,7 +61,7 @@ async function userLogin(req, res) {
     }
 
     if( !result ){
-      return res.status.json({
+      return res.status(401).json({
       message: "Invalid credentials",
     });
     }
@@ -77,4 +77,53 @@ async function userLogin(req, res) {
   });
 }
 
-module.exports = { registerUser, userLogin };
+async function userLogout(req, res){
+  try{
+    res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict"
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
+
+  }catch(err){
+    return res.status(500).json({
+      message: "Logout failed",
+      error: error.message,
+    });
+  }
+}
+
+async function getCurrentuser(req, res){
+  const user = await userModel.findById(req.user.userID).select("-password")
+  res.status(201).json({ user })
+}
+
+async function changePassword (req, res){
+
+  const { oldPassword, newPassword} = req.body
+
+  const user = await userModel.findById(req.user.userID)
+  console.log(user,oldPassword)
+
+  try{
+    const ismatch = await bcrypt.compare(oldPassword, user.password)
+
+    if(!ismatch) return res.status(400).json({ message: "Old password is inccorect"})
+
+    user.password = await bcrypt.hash( newPassword, 10)
+
+    await user.save()
+    res.status(200).json({ message: "Password updated successfully" })
+
+  }catch(err)
+  {
+    return res.status(401).json({
+      message: "Something went wrong"
+    })
+  }
+
+
+}
+module.exports = { registerUser, userLogin, userLogout, getCurrentuser, changePassword };

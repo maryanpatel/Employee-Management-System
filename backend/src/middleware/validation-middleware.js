@@ -24,6 +24,14 @@ const phoneValidation = body("phonenumber")
   .matches(/^[6-9]\d{9}$/)
   .withMessage("Phone number must be a valid 10-digit Indian number");
 
+// employeeid
+const employeeIdValidation = body("employeeId")
+    .trim()
+    .notEmpty()
+    .withMessage("Employee ID is required")
+    .matches(/^[A-Z]{3}[0-9]{3}$/)
+    .withMessage("Employee ID must contain 3 uppercase letters followed by 3 numbers")
+
 // Error handler
 const validateAdmin = (req, res, next) => {
   const errors = validationResult(req);
@@ -57,6 +65,20 @@ const passwordValidationRules = [
   passwordValidation("newPassword"),
   validateAdmin,
 ];
+//employee creation
+const createEmployeeValidationRules = [
+  passwordValidation("password"),
+  emailValidation,
+  phoneValidation,
+  employeeIdValidation,
+
+
+  validateAdmin,
+];
+// const updateEmployeeValidationRules = [
+//   phoneValidation,
+//   validateAdmin,
+// ];
 
 module.exports = {
   validateAdmin,
@@ -66,4 +88,5 @@ module.exports = {
   registerAdminValidationRules,
   loginAdminValidationRules,
   passwordValidationRules,
+  createEmployeeValidationRules,
 };

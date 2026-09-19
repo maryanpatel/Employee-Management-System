@@ -205,7 +205,7 @@ async function deleteEmployee(req, res) {
 
 async function getMyProfile(req, res) {
   try{
-    const id = req.user.userID
+    const id = req.user.id
     const employee = await employeeModel.findOne({ user: id}).populate("user", "-password")
 
     if(!employee) {

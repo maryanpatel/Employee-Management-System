@@ -44,7 +44,6 @@ async function getAllTasks(req, res) {
       });
       if (employee) filter.assignedTo = employee._id;
     }
-    console.log(filter)
     const tasks = await taskModel
       .find(filter)
       .populate("assignedTo", "employeeId department")
@@ -75,5 +74,79 @@ async function getMyTasks(req, res) {
     return res.status(500).json({ message: "Failed to fetch tasks", error: error.message });
   }
 }
+async function getTaskById(req, res) {
+  const task = req.task;
+  console.log(task)
+  if (req.user.role === "employee") {
+    const employee = await employeeModel.findOne({ user: req.user.id });
+    console.log(employee)
+    if (!employee || task.assignedTo._id.toString() !== employee._id.toString()) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+  }
 
-module.exports = { createTask, getAllTasks, getMyTasks };
+  return res.status(200).json({ task });
+}
+async function updateTask(req, res) {
+  try {
+    const { title, description, assignedTo, priority, dueDate } = req.body;
+
+    const updates = {};
+    if (title !== undefined) updates.title = title;
+    if (description !== undefined) updates.description = description;
+    if (priority !== undefined) updates.priority = priority;
+    if (dueDate !== undefined) updates.dueDate = dueDate;
+
+    if (assignedTo !== undefined) {
+      const employee = await employeeModel.findById(assignedTo);
+      if (!employee) {
+        return res.status(404).json({ message: "Assigned employee not found" });
+      }
+      updates.assignedTo = assignedTo;
+    }
+
+    const updatedTask = await taskModel.findByIdAndUpdate(req.task._id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    return res.status(200).json({ message: "Task updated successfully", task: updatedTask });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update task", error: error.message });
+  }
+}
+async function updateTaskStatus(req, res) {
+  try {
+    const { status } = req.body;
+    const allowedStatuses = ["pending", "in-progress", "completed"];
+
+    if (!status || !allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const employee = await employeeModel.findOne({ user: req.user.id });
+    if (!employee || req.task.assignedTo._id.toString() !== employee._id.toString()) {
+      return res.status(403).json({ message: "You can only update your own tasks" });
+    }
+
+    const updatedTask = await taskModel.findByIdAndUpdate(
+      req.task._id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({ message: "Task status updated", task: updatedTask });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update status", error: error.message });
+  }
+}
+
+async function deleteTask(req, res) {
+  try {
+    await taskModel.findByIdAndDelete(req.task._id);
+    return res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to delete task", error: error.message });
+  }
+}
+module.exports = { createTask, getAllTasks, getMyTasks, getTaskById, updateTask, updateTaskStatus, deleteTask };

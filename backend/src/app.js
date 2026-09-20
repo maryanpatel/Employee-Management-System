@@ -11,9 +11,11 @@ app.use(cookieparser())
 
 const authRoutes = require("./routes/auth-routes")
 const employeeRoutes = require("./routes/employee-routes")
+const taskRoutes = require ("./routes/task-routes")
 
 app.use("/accounts", authRoutes)
 app.use("/employee", employeeRoutes)
+app.use("/tasks", taskRoutes)
 
 
 

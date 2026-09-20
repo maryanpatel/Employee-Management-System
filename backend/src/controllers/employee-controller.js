@@ -1,6 +1,7 @@
 const { param } = require("express-validator");
 const employeeModel = require("../model/Employee-modal");
 const userModel = require("../model/User-modal");
+const taskModel = require("../model/task-modal")
 const bcrypt = require("bcrypt");
 
 async function createEmployee(req, res) {
@@ -179,7 +180,7 @@ async function deleteEmployee(req, res) {
         message: "Employee not found" 
       })
     }
-
+    await taskModel.deleteMany({ assignedTo: employee._id })
     const deletedUser = await userModel.findByIdAndDelete( employee.user._id )
 
     if(!deletedUser) {
@@ -199,6 +200,7 @@ async function deleteEmployee(req, res) {
   } catch (err) {
     return res.status(500).json({
       message: "Somethin went wrong, delet fail",
+      error:err.message,
     })
   }
 }

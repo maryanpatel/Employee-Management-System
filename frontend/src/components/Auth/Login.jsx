@@ -1,5 +1,8 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/axiosInstance";
+import { useAuth } from "../../context/AuthContext";
 import {
   Mail,
   Lock,
@@ -15,6 +18,9 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -30,18 +36,23 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("")
 
     setLoading(true);
+    try {
+      const res = await api.post("/auth/login", { email: formData.email, password: formData.password })
+      login(res.data.user, res.data.token)
+      // redirect based on role
+      if (res.data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/employee/dashboard");
+      }
 
-    // Demo loading
-    setTimeout(() => {
-      console.log("Login Data:", {
-        ...formData,
-        rememberMe,
-      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed")
+    }
 
-      setLoading(false);
-    }, 1500);
   };
 
   return (

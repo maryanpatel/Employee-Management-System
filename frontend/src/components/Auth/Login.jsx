@@ -12,47 +12,88 @@ import {
   ShieldCheck,
   CheckCircle2,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [fieldErrors, setFieldErrors] = useState({});
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+
+    // Clear field-specific error as user types
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+
+    // Clear top error list if user edits input
+    if (errors.length > 0) {
+      setErrors([]);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("")
+    setErrors([]);
+    setFieldErrors({});
 
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", { email: formData.email, password: formData.password })
-      login(res.data.user, res.data.token)
+      const res = await api.post("/account/login", {
+        email: email,
+        password: password,
+      });
+      login(res.data.user, res.data.token);
       // redirect based on role
       if (res.data.user.role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/employee/dashboard");
       }
-
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed")
-    }
+      const data = err.response?.data;
+      console.log("Login error response:", data);
 
+      if (data?.errors && Array.isArray(data.errors)) {
+        const fieldMap = {};
+        data.errors.forEach((item) => {
+          const field = item.path || item.param;
+          if (field && !fieldMap[field]) {
+            fieldMap[field] = item.msg || item.message;
+          }
+        });
+
+        // setErrors(extractedMsgs);
+        setFieldErrors(fieldMap);
+      } else if (data?.message) {
+        // Single message (e.g. invalid credentials, rate limit)
+        setErrors([data.message]);
+        setFieldErrors({});
+      } else {
+        setErrors(["Something went wrong. Please try again."]);
+        setFieldErrors({});
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,29 +112,6 @@ export default function Login() {
         {/* Card */}
         <div className="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/60 p-7 sm:p-9">
 
-          {/* Logo */}
-          {/* <div className="flex justify-center mb-7">
-            <div className="flex items-center gap-3">
-
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200">
-                <ShieldCheck
-                  size={24}
-                  className="text-white"
-                />
-              </div>
-
-              <div>
-                <h1 className="text-xl font-bold text-slate-900">
-                  WorkSphere
-                </h1>
-
-                <p className="text-xs text-slate-500">
-                  Employee Management
-                </p>
-              </div>
-
-            </div>
-          </div> */}
 
           {/* Heading */}
           <div className="text-center mb-8">
@@ -111,6 +129,15 @@ export default function Login() {
             onSubmit={handleSubmit}
             className="space-y-5"
           >
+            {/* Error Message Box */}
+            {errors.length > 0 && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-2xl p-4 flex gap-3 items-start animate-in fade-in duration-200">
+                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-medium">{errors[0]}</p>
+                </div>
+              </div>
+            )}
 
             {/* Email */}
             <div>
@@ -119,23 +146,25 @@ export default function Login() {
               </label>
 
               <div className="relative group">
-
                 <Mail
                   size={19}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${fieldErrors.email
+                    ? "text-red-400 group-focus-within:text-red-500"
+                    : "text-slate-400 group-focus-within:text-blue-600"
+                    }`}
                 />
 
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
+                  value={email}
                   onChange={handleChange}
                   placeholder="you@company.com"
                   required
-                  className="
+                  className={`
                     w-full
                     bg-slate-50
-                    border border-slate-200
+                    border
                     rounded-xl
                     py-3.5
                     pl-12
@@ -144,51 +173,48 @@ export default function Login() {
                     placeholder-slate-400
                     outline-none
                     transition-all
-                    focus:bg-white
-                    focus:border-blue-500
-                    focus:ring-4
-                    focus:ring-blue-500/10
-                  "
+                    ${fieldErrors.email
+                      ? "border-red-400 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                      : "border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                    }
+                  `}
                 />
-
               </div>
+              {fieldErrors.email && (
+                <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1 font-medium">
+                  <span>•</span> {fieldErrors.email}
+                </p>
+              )}
             </div>
 
             {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-2">
-
                 <label className="block text-sm font-medium text-slate-700">
                   Password
                 </label>
-
-                {/* <a
-                  href="/forgot-password"
-                  className="text-xs font-medium text-blue-600 hover:text-blue-700"
-                >
-                  Forgot password?
-                </a> */}
-
               </div>
 
               <div className="relative group">
-
                 <Lock
                   size={19}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${fieldErrors.password
+                    ? "text-red-400 group-focus-within:text-red-500"
+                    : "text-slate-400 group-focus-within:text-blue-600"
+                    }`}
                 />
 
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  value={formData.password}
+                  value={password}
                   onChange={handleChange}
                   placeholder="Enter your password"
                   required
-                  className="
+                  className={`
                     w-full
                     bg-slate-50
-                    border border-slate-200
+                    border
                     rounded-xl
                     py-3.5
                     pl-12
@@ -197,11 +223,11 @@ export default function Login() {
                     placeholder-slate-400
                     outline-none
                     transition-all
-                    focus:bg-white
-                    focus:border-blue-500
-                    focus:ring-4
-                    focus:ring-blue-500/10
-                  "
+                    ${fieldErrors.password
+                      ? "border-red-400 focus:bg-white focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                      : "border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                    }
+                  `}
                 />
 
                 <button
@@ -225,8 +251,12 @@ export default function Login() {
                     <Eye size={19} />
                   )}
                 </button>
-
               </div>
+              {fieldErrors.password && (
+                <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1 font-medium">
+                  <span>•</span> {fieldErrors.password}
+                </p>
+              )}
             </div>
 
 
@@ -286,21 +316,6 @@ export default function Login() {
 
           </form>
 
-          {/* Signup */}
-          <div className="mt-7 pt-6 border-t border-slate-100">
-
-            <p className="text-center text-sm text-slate-500">
-              Don't have an account?{" "}
-
-              <a
-                href="/signup"
-                className="font-semibold text-blue-600 hover:text-blue-700 transition"
-              >
-                Create an account
-              </a>
-            </p>
-
-          </div>
 
         </div>
 

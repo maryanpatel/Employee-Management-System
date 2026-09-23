@@ -26,14 +26,20 @@ async function registerUser(req, res) {
     const token = jwt.sign(
       { id: admin._id, role: admin.role },
       process.env.JWT_SECERT,
+      { expiresIn: "7d" }
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.status(201).json({
-      message: "user created successfully ",
-      fullname,
-      email,
-      role,
+      message: "User created successfully",
+      user: { id: admin._id, fullname: admin.fullname, email: admin.email, role: admin.role },
+      token,
     });
   } catch (err) {
     return res.status(500).json({
@@ -63,12 +69,20 @@ async function userLogin(req, res) {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECERT,
+      { expiresIn: "7d" }
     );
-    res.cookie("token", token);
-    res.status(201).json({
-      message: "user login successfully",
-      fullname: user.fullname,
-      role: user.role,
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      user: { id: user._id, fullname: user.fullname, email: user.email, role: user.role },
+      token,
     });
   } catch (err) {
     return res.status(500).json({

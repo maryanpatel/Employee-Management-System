@@ -15,7 +15,13 @@ export const AuthProvider = ({ children }) => {
         const storedUser = localStorage.getItem("user");
 
         if (token && storedUser) {
-            setUser(JSON.parse(storedUser));
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                // localStorage had corrupted/invalid JSON — clear it
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+            }
         }
         setLoading(false);
     }, [])
@@ -30,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await api.post("/auth/logout");
+            await api.post("/account/logout");
         } catch (err) {
             // even if backend call fails, still clear frontend session
             console.error("Logout request failed:", err.message);

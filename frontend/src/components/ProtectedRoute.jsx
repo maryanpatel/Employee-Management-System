@@ -3,7 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ allowedRoles, children }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) return null; // Wait for localStorage to be read
 
   if (!user) return <Navigate to="/login" replace />;
 

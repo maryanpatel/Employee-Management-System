@@ -1,3 +1,5 @@
+import React from 'react'
+import EmployeeDashboard from './pages/EmployeeDashboard'
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
@@ -13,6 +15,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
+   <>
+   <EmployeeDashboard />
+   </>
+  )
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />

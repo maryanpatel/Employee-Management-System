@@ -32,7 +32,7 @@ export default function EmployeeHeader({ user, onLogout }) {
               </p>
 
               <h1 className="text-lg sm:text-xl font-bold text-slate-900">
-                {user.name} 
+                {user.name}
               </h1>
             </div>
 

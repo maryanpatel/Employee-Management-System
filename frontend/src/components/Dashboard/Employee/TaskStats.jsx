@@ -1,27 +1,29 @@
+import { useMemo } from "react";
 import StatCard from "./StatCard";
-
+import api from "../../../api/axiosInstance"
 export default function TaskStats({
   tasks,
   activeFilter,
   setActiveFilter,
 }) {
-  const stats = {
-    new: tasks.filter(
-      (task) => task.status === "new"
-    ).length,
 
-    completed: tasks.filter(
-      (task) => task.status === "completed"
-    ).length,
-
-    accepted: tasks.filter(
-      (task) => task.status === "accepted"
-    ).length,
-
-    failed: tasks.filter(
-      (task) => task.status === "failed"
-    ).length,
-  };
+  const stats = useMemo(() => {
+    return tasks.reduce(
+      (acc, task) => {
+        if (task.status == "failed") {
+          acc.failed++;
+        } else if (task.status === "new") {
+          acc.new++;
+        } else if (task.status === "in-progress") {
+          acc.accepted++;
+        } else if (task.status === "completed") {
+          acc.completed++;
+        }
+        return acc;
+      },
+      { failed: 0, new: 0, accepted: 0, completed: 0 }
+    );
+  }, [tasks]);
 
   return (
     <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">

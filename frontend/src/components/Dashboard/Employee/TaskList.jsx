@@ -8,9 +8,11 @@ export default function TaskList({
   const filteredTasks =
     activeFilter === "all"
       ? tasks
-      : tasks.filter(
-          (task) => task.status === activeFilter
-        );
+      : tasks.filter((task) => {
+          if (activeFilter === "new") return task.status === "new" || task.status === "pending";
+          if (activeFilter === "accepted") return task.status === "accepted" || task.status === "in-progress";
+          return task.status === activeFilter;
+        });
 
   return (
     <section className="mt-8">
@@ -37,7 +39,7 @@ export default function TaskList({
         <div className="space-y-4">
           {filteredTasks.map((task) => (
             <TaskCard
-              key={task.id}
+              key={task._id || task.id}
               task={task}
             />
           ))}

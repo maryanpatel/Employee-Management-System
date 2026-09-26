@@ -12,10 +12,22 @@ export default function TaskCard({ task }) {
       label: "New",
     },
 
+    pending: {
+      card: "border-blue-100 bg-blue-50/50",
+      badge: "bg-blue-100 text-blue-700",
+      label: "Pending",
+    },
+
     accepted: {
       card: "border-amber-100 bg-amber-50/50",
       badge: "bg-amber-100 text-amber-700",
       label: "Accepted",
+    },
+
+    "in-progress": {
+      card: "border-amber-100 bg-amber-50/50",
+      badge: "bg-amber-100 text-amber-700",
+      label: "In Progress",
     },
 
     completed: {
@@ -37,7 +49,20 @@ export default function TaskCard({ task }) {
     Low: "bg-emerald-100 text-emerald-700",
   };
 
-  const style = statusStyles[task.status];
+  const style = statusStyles[task.status] || statusStyles.new;
+
+  const normalizedPriority = task.priority
+    ? task.priority.charAt(0).toUpperCase() + task.priority.slice(1).toLowerCase()
+    : "Medium";
+  const priorityClass = priorityStyles[normalizedPriority] || priorityStyles.Medium;
+
+  const displayDate = task.dueDate
+    ? new Date(task.dueDate).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : task.date || "No date";
 
   return (
     <article
@@ -63,15 +88,15 @@ export default function TaskCard({ task }) {
             rounded-lg
             text-xs
             font-semibold
-            ${priorityStyles[task.priority]}
+            ${priorityClass}
           `}
         >
-          {task.priority}
+          {normalizedPriority}
         </span>
 
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
           <CalendarDays size={14} />
-          {task.date}
+          {displayDate}
         </div>
 
       </div>
@@ -101,9 +126,9 @@ export default function TaskCard({ task }) {
 
         </div>
 
-        <p className="text-sm text-slate-600 leading-6 mt-2">
+        {/* <p className="text-sm text-slate-600 leading-6 mt-2">
           {task.description}
-        </p>
+        </p> */}
 
       </div>
 

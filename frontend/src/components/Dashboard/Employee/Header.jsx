@@ -32,7 +32,7 @@ export default function EmployeeHeader({ user, onLogout }) {
               </p>
 
               <h1 className="text-lg sm:text-xl font-bold text-slate-900">
-                {user.name} 
+                {user?.fullname || user?.name || "Employee"} 
               </h1>
             </div>
 
@@ -92,11 +92,11 @@ export default function EmployeeHeader({ user, onLogout }) {
                   <div className="px-3 py-3 border-b border-slate-100">
 
                     <p className="font-semibold text-slate-900">
-                      {user.name}
+                      {user?.fullname || user?.name || "Employee"}
                     </p>
 
                     <p className="text-xs text-slate-500 mt-1">
-                      {user.email}
+                      {user?.email || ""}
                     </p>
 
                   </div>

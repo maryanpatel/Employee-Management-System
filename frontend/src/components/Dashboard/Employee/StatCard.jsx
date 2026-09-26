@@ -5,12 +5,12 @@ import {
   XCircle,
 } from "lucide-react";
 
-const icons = {
-  new: ClipboardList,
-  completed: CheckCircle2,
-  accepted: Clock3,
-  failed: XCircle,
-};
+// const icons = {
+//   new: ClipboardList,
+//   completed: CheckCircle2,
+//   accepted: Clock3,
+//   failed: XCircle,
+// };
 
 export default function StatCard({
   title,
@@ -19,34 +19,30 @@ export default function StatCard({
   active,
   onClick,
 }) {
-  const Icon = icons[type];
+  // const Icon = icons[type];
 
   const styles = {
     new: {
       bg: "bg-blue-50",
       border: "border-blue-100",
-      icon: "bg-blue-500",
       text: "text-blue-700",
     },
 
     completed: {
       bg: "bg-emerald-50",
       border: "border-emerald-100",
-      icon: "bg-emerald-500",
       text: "text-emerald-700",
     },
 
     accepted: {
       bg: "bg-amber-50",
       border: "border-amber-100",
-      icon: "bg-amber-500",
       text: "text-amber-700",
     },
 
     failed: {
       bg: "bg-red-50",
       border: "border-red-100",
-      icon: "bg-red-500",
       text: "text-red-700",
     },
   };
@@ -88,7 +84,7 @@ export default function StatCard({
           </p>
         </div>
 
-        <div
+        {/* <div
           className={`
             w-10
             h-10
@@ -104,7 +100,7 @@ export default function StatCard({
             size={21}
             className="text-white"
           />
-        </div>
+        </div> */}
 
       </div>
 

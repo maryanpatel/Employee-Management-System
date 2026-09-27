@@ -4,13 +4,14 @@ import TaskCard from "./TaskCard";
 export default function TaskList({
   tasks,
   activeFilter,
+  onViewTask,
 }) {
   const filteredTasks =
     activeFilter === "all"
       ? tasks
       : tasks.filter((task) => {
-          if (activeFilter === "new") return task.status === "new" || task.status === "pending";
-          if (activeFilter === "accepted") return task.status === "accepted" || task.status === "in-progress";
+          if (activeFilter === "new") return task.status === "new";
+          if (activeFilter === "in-progress") return task.status === "in-progress";
           return task.status === activeFilter;
         });
 
@@ -41,6 +42,7 @@ export default function TaskList({
             <TaskCard
               key={task._id || task.id}
               task={task}
+              onViewTask={onViewTask}
             />
           ))}
         </div>

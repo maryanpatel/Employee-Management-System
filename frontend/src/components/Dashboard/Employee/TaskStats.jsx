@@ -10,18 +10,18 @@ export default function TaskStats({
   const stats = useMemo(() => {
     return tasks.reduce(
       (acc, task) => {
-        if (task.status == "failed") {
+        if (task.status === "failed") {
           acc.failed++;
         } else if (task.status === "new") {
           acc.new++;
         } else if (task.status === "in-progress") {
-          acc.accepted++;
+          acc.inProgress++;
         } else if (task.status === "completed") {
           acc.completed++;
         }
         return acc;
       },
-      { failed: 0, new: 0, accepted: 0, completed: 0 }
+      { failed: 0, new: 0, inProgress: 0, completed: 0 }
     );
   }, [tasks]);
 
@@ -41,6 +41,20 @@ export default function TaskStats({
       />
 
       <StatCard
+        title="In Progress"
+        count={stats.inProgress}
+        type="in-progress"
+        active={activeFilter === "in-progress"}
+        onClick={() =>
+          setActiveFilter(
+            activeFilter === "in-progress"
+              ? "all"
+              : "in-progress"
+          )
+        }
+      />
+
+      <StatCard
         title="Completed"
         count={stats.completed}
         type="completed"
@@ -50,20 +64,6 @@ export default function TaskStats({
             activeFilter === "completed"
               ? "all"
               : "completed"
-          )
-        }
-      />
-
-      <StatCard
-        title="Accepted"
-        count={stats.accepted}
-        type="accepted"
-        active={activeFilter === "accepted"}
-        onClick={() =>
-          setActiveFilter(
-            activeFilter === "accepted"
-              ? "all"
-              : "accepted"
           )
         }
       />

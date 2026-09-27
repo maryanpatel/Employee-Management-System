@@ -30,7 +30,7 @@ export default function AdminTasks() {
       employee: "Rahul",
       priority: "Medium",
       date: "19 Feb 2024",
-      status: "accepted",
+      status: "in-progress",
     },
     {
       id: 3,
@@ -57,7 +57,7 @@ export default function AdminTasks() {
       employee: "Sarthak",
       priority: "High",
       date: "21 Feb 2024",
-      status: "pending",
+      status: "in-progress",
     },
     {
       id: 6,
@@ -66,7 +66,7 @@ export default function AdminTasks() {
       employee: "Priya",
       priority: "Medium",
       date: "22 Feb 2024",
-      status: "pending",
+      status: "in-progress",
     },
   ];
 

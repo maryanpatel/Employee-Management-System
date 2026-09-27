@@ -1,6 +1,4 @@
-import React from 'react'
-import EmployeeDashboard from './pages/EmployeeDashboard'
-
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./components/Auth/Login";
@@ -10,15 +8,12 @@ import CreateEmployee from "./components/Dashboard/Admin/AddEmployeeModal";
 import EmployeeList from "./pages/EmployeeList";
 import EmployeeProfile from "./pages/EmployeeProfile";
 import TaskList from "./components/Dashboard/Employee/TaskList";
+import ViewTask from "./pages/ViewTask";
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-   <>
-   <EmployeeDashboard />
-   </>
-  )
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
@@ -65,6 +60,15 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={["employee"]}>
             <EmployeeDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/employee/tasks/:id"
+        element={
+          <ProtectedRoute allowedRoles={["employee", "admin"]}>
+            <ViewTask />
           </ProtectedRoute>
         }
       />

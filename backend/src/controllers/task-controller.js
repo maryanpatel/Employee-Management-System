@@ -118,7 +118,7 @@ async function updateTask(req, res) {
 async function updateTaskStatus(req, res) {
   try {
     const { status } = req.body;
-    const allowedStatuses = ["pending", "in-progress", "completed"];
+    const allowedStatuses = ["new", "in-progress", "completed", "failed"];
 
     if (!status || !allowedStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });

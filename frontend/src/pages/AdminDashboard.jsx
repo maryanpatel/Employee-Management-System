@@ -46,7 +46,7 @@ export default function AdminDashboard() {
             employee: "Rahul",
             priority: "Medium",
             date: "19 Feb 2024",
-            status: "accepted",
+            status: "in-progress",
         },
 
         {

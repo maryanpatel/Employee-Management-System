@@ -20,42 +20,48 @@ const styles = {
   employees: {
     bg: "bg-blue-50",
     border: "border-blue-100",
-    icon: "bg-blue-500",
     text: "text-blue-700",
   },
 
   tasks: {
     bg: "bg-indigo-50",
     border: "border-indigo-100",
-    icon: "bg-indigo-500",
     text: "text-indigo-700",
   },
 
   new: {
     bg: "bg-sky-50",
     border: "border-sky-100",
-    icon: "bg-sky-500",
     text: "text-sky-700",
+  },
+
+  accepted: {
+    bg: "bg-amber-50",
+    border: "border-amber-100",
+    text: "text-amber-700",
   },
 
   pending: {
     bg: "bg-amber-50",
     border: "border-amber-100",
-    icon: "bg-amber-500",
+    text: "text-amber-700",
+  },
+
+  "in-progress": {
+    bg: "bg-amber-100",
+    border: "border-amber-200",
     text: "text-amber-700",
   },
 
   completed: {
     bg: "bg-emerald-50",
     border: "border-emerald-100",
-    icon: "bg-emerald-500",
     text: "text-emerald-700",
   },
 
   failed: {
     bg: "bg-red-50",
     border: "border-red-100",
-    icon: "bg-red-500",
     text: "text-red-700",
   },
 };
@@ -66,15 +72,19 @@ export default function AdminStatCard({
   description,
   type,
 }) {
-  const Icon = icons[type];
-  const style = styles[type];
+  const Icon = icons[type] || icons.new;
+  const style = styles[type] || styles.new || {
+    bg: "bg-slate-50",
+    border: "border-slate-100",
+    text: "text-slate-700",
+  };
 
   return (
     <div
       className={`
-        ${style.bg}
+        bg-gray-100
         border
-        ${style.border}
+        border-gray-100
         rounded-2xl
         p-5
         transition-all
@@ -97,29 +107,7 @@ export default function AdminStatCard({
           </p>
         </div>
 
-        <div
-          className={`
-            w-11
-            h-11
-            rounded-xl
-            ${style.icon}
-            flex
-            items-center
-            justify-center
-            shadow-sm
-          `}
-        >
-          <Icon
-            size={21}
-            className="text-white"
-          />
-        </div>
-
       </div>
-
-      <p className="text-xs text-slate-500 mt-3">
-        {description}
-      </p>
 
     </div>
   );

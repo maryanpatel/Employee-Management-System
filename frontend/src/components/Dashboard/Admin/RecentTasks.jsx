@@ -3,7 +3,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-export default function RecentTasks({ tasks }) {
+export default function RecentTasks({ tasks = [] }) {
 
   const statusStyles = {
     new: "bg-blue-100 text-blue-700",
@@ -83,127 +83,160 @@ export default function RecentTasks({ tasks }) {
           </div>
         </div>
 
-        {/* Rows */}
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            className="
-              px-5
-              py-4
-              border-b
-              border-slate-100
-              last:border-0
-              hover:bg-slate-50
-              transition
-            "
-          >
+        {/* Scrollable Rows: Displays 4 tasks, scroll down to see more */}
+        <div className="max-h-[308px] overflow-y-auto divide-y divide-slate-100 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {tasks && tasks.length > 0 ? (
+            tasks.map((task) => {
+              const employeeName =
+                task.employee ||
+                task.assignedTo?.fullname ||
+                task.assignedTo?.department ||
+                task.assignedTo?.employeeId ||
+                "Unassigned";
 
-            {/* Desktop */}
-            <div className="
-              hidden
-              md:grid
-              grid-cols-12
-              gap-4
-              items-center
-            ">
+              const displayDate =
+                task.date ||
+                (task.dueDate
+                  ? new Date(task.dueDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+                  : task.createdAt
+                  ? new Date(task.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+                  : "No date");
 
-              <div className="col-span-4">
-                <p className="font-semibold text-slate-800">
-                  {task.title}
-                </p>
-
-                <p className="text-xs text-slate-500 mt-1">
-                  {task.description}
-                </p>
-              </div>
-
-              <div className="col-span-2 text-sm text-slate-600">
-                {task.employee}
-              </div>
-
-              <div className="col-span-2">
-                <span className="text-xs font-semibold text-slate-600">
-                  {task.priority}
-                </span>
-              </div>
-
-              <div className="col-span-2">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                  <CalendarDays size={14} />
-                  {task.date}
-                </div>
-              </div>
-
-              <div className="col-span-2">
-                <span
-                  className={`
-                    inline-flex
-                    px-2.5
-                    py-1
-                    rounded-full
-                    text-xs
-                    font-semibold
-                    ${statusStyles[task.status]}
-                  `}
+              return (
+                <div
+                  key={task._id || task.id}
+                  className="
+                    px-5
+                    py-4
+                    hover:bg-slate-50
+                    transition
+                  "
                 >
-                  {task.status}
-                </span>
-              </div>
 
-            </div>
+                  {/* Desktop */}
+                  <div className="
+                    hidden
+                    md:grid
+                    grid-cols-12
+                    gap-4
+                    items-center
+                  ">
 
-            {/* Mobile */}
-            <div className="md:hidden">
+                    <div className="col-span-4">
+                      <p className="font-semibold text-slate-800">
+                        {task.title}
+                      </p>
 
-              <div className="flex items-start justify-between gap-3">
+                      {task.description && (
+                        <p className="text-xs text-slate-500 mt-1 truncate">
+                          {task.description}
+                        </p>
+                      )}
+                    </div>
 
-                <div>
-                  <h3 className="font-semibold text-slate-900">
-                    {task.title}
-                  </h3>
+                    <div className="col-span-2 text-sm text-slate-600">
+                      {employeeName}
+                    </div>
 
-                  <p className="text-xs text-slate-500 mt-1">
-                    {task.employee}
-                  </p>
+                    <div className="col-span-2">
+                      <span className="text-xs font-semibold text-slate-600 capitalize">
+                        {task.priority || "Medium"}
+                      </span>
+                    </div>
+
+                    <div className="col-span-2">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <CalendarDays size={14} />
+                        {displayDate}
+                      </div>
+                    </div>
+
+                    <div className="col-span-2">
+                      <span
+                        className={`
+                          inline-flex
+                          px-2.5
+                          py-1
+                          rounded-full
+                          text-xs
+                          font-semibold
+                          ${statusStyles[task.status] || "bg-slate-100 text-slate-700"}
+                        `}
+                      >
+                        {task.status}
+                      </span>
+                    </div>
+
+                  </div>
+
+                  {/* Mobile */}
+                  <div className="md:hidden">
+
+                    <div className="flex items-start justify-between gap-3">
+
+                      <div>
+                        <h3 className="font-semibold text-slate-900">
+                          {task.title}
+                        </h3>
+
+                        <p className="text-xs text-slate-500 mt-1">
+                          {employeeName}
+                        </p>
+                      </div>
+
+                      <span
+                        className={`
+                          px-2.5
+                          py-1
+                          rounded-full
+                          text-xs
+                          font-semibold
+                          ${statusStyles[task.status] || "bg-slate-100 text-slate-700"}
+                        `}
+                      >
+                        {task.status}
+                      </span>
+
+                    </div>
+
+                    {task.description && (
+                      <p className="text-sm text-slate-500 mt-3">
+                        {task.description}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
+
+                      <span className="capitalize">
+                        {task.priority || "Medium"} Priority
+                      </span>
+
+                      <span className="flex items-center gap-1">
+                        <CalendarDays size={13} />
+                        {displayDate}
+                      </span>
+
+                    </div>
+
+                  </div>
+
                 </div>
-
-                <span
-                  className={`
-                    px-2.5
-                    py-1
-                    rounded-full
-                    text-xs
-                    font-semibold
-                    ${statusStyles[task.status]}
-                  `}
-                >
-                  {task.status}
-                </span>
-
-              </div>
-
-              <p className="text-sm text-slate-500 mt-3">
-                {task.description}
-              </p>
-
-              <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
-
-                <span>
-                  {task.priority} Priority
-                </span>
-
-                <span className="flex items-center gap-1">
-                  <CalendarDays size={13} />
-                  {task.date}
-                </span>
-
-              </div>
-
+              );
+            })
+          ) : (
+            <div className="py-12 text-center text-slate-400 text-sm">
+              No recent tasks found
             </div>
-
-          </div>
-        ))}
-
+          )}
+        </div>
       </div>
     </section>
   );

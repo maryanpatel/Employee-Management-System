@@ -76,8 +76,7 @@ export default function TaskFilters({
         >
           <option value="all">All Status</option>
           <option value="new">New</option>
-          <option value="accepted">Accepted</option>
-          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
           <option value="failed">Failed</option>
         </select>

@@ -2,42 +2,36 @@ import {
   CalendarDays,
   ArrowRight,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export default function TaskCard({ task }) {
+export default function TaskCard({ task, onViewTask }) {
+  const navigate = useNavigate();
+
+  const handleView = () => {
+    if (onViewTask) {
+      onViewTask(task);
+    } else {
+      navigate(`/employee/tasks/${task._id || task.id}`, { state: { task } });
+    }
+  };
 
   const statusStyles = {
     new: {
-      card: "border-blue-100 bg-blue-50/50",
       badge: "bg-blue-100 text-blue-700",
       label: "New",
     },
 
-    pending: {
-      card: "border-blue-100 bg-blue-50/50",
-      badge: "bg-blue-100 text-blue-700",
-      label: "Pending",
-    },
-
-    accepted: {
-      card: "border-amber-100 bg-amber-50/50",
-      badge: "bg-amber-100 text-amber-700",
-      label: "Accepted",
-    },
-
     "in-progress": {
-      card: "border-amber-100 bg-amber-50/50",
       badge: "bg-amber-100 text-amber-700",
       label: "In Progress",
     },
 
     completed: {
-      card: "border-emerald-100 bg-emerald-50/50",
       badge: "bg-emerald-100 text-emerald-700",
       label: "Completed",
     },
 
     failed: {
-      card: "border-red-100 bg-red-50/50",
       badge: "bg-red-100 text-red-700",
       label: "Failed",
     },
@@ -67,9 +61,10 @@ export default function TaskCard({ task }) {
   return (
     <article
       className={`
-        ${style.card}
+        bg-gray-100
         border
         rounded-2xl
+        border-gray-100
         p-5
         transition-all
         duration-200
@@ -150,6 +145,8 @@ export default function TaskCard({ task }) {
         </span>
 
         <button
+          type="button"
+          onClick={handleView}
           className="
             ml-auto
             flex
@@ -161,6 +158,7 @@ export default function TaskCard({ task }) {
             hover:text-blue-700
             transition
             group
+            cursor-pointer
           "
         >
           View task

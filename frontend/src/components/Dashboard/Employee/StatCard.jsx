@@ -23,26 +23,19 @@ export default function StatCard({
 
   const styles = {
     new: {
-      bg: "bg-blue-50",
-      border: "border-blue-100",
+
       text: "text-blue-700",
     },
 
     completed: {
-      bg: "bg-emerald-50",
-      border: "border-emerald-100",
       text: "text-emerald-700",
     },
 
-    accepted: {
-      bg: "bg-amber-50",
-      border: "border-amber-100",
-      text: "text-amber-700",
+    "in-progress": {
+      text: "text-amber-600",
     },
 
     failed: {
-      bg: "bg-red-50",
-      border: "border-red-100",
       text: "text-red-700",
     },
   };
@@ -55,9 +48,9 @@ export default function StatCard({
       className={`
         text-left
         w-full
-        ${style.bg}
+        bg-gray-100
         border
-        ${style.border}
+        border-gray-100
         rounded-2xl
         p-5
         transition-all
@@ -84,29 +77,9 @@ export default function StatCard({
           </p>
         </div>
 
-        {/* <div
-          className={`
-            w-10
-            h-10
-            rounded-xl
-            ${style.icon}
-            flex
-            items-center
-            justify-center
-            shadow-sm
-          `}
-        >
-          <Icon
-            size={21}
-            className="text-white"
-          />
-        </div> */}
 
       </div>
 
-      <p className="text-xs text-slate-500 mt-3">
-        View {title.toLowerCase()} tasks
-      </p>
 
     </button>
   );

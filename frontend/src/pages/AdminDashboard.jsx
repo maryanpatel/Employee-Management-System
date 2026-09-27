@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import CreateTaskModal from "../components/Dashboard/Admin/CreateTaskModal";
 import AdminHeader from "../components/Dashboard/Admin/AdminHeader";
 import AdminStats from "../components/Dashboard/Admin/AdminStats";
@@ -6,72 +6,96 @@ import QuickActions from "../components/Dashboard/Admin/QuickActions";
 import RecentTasks from "../components/Dashboard/Admin/RecentTasks";
 import EmployeePerformance from "../components/Dashboard/Admin/EmployeePerformance";
 import AddEmployeeModal from "../components/Dashboard/Admin/AddEmployeeModal";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axiosInstance";
+import { useAuth } from "../context/AuthContext";
 
 export default function AdminDashboard() {
 
     const [showCreateTask, setShowCreateTask] = useState(false);
     const [showAddEmployee, setShowAddEmployee] = useState(false);
+    const [allemployees, setAllemployees] = useState([]);
+    const [totaltasks, setTotaltasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
-    const admin = {
-        name: "Admin",
-        email: "admin@worksphere.com",
-    };
+    useEffect(() => {
+        const fetchAllEmployee = async () => {
+            try {
+                setLoading(true);
+                setError("");
+                const res = await api.get("/employee/all");
+                setAllemployees(res.data?.employees || []);
+                console.log(res.data?.employees || [])
+            } catch (err) {
+                console.error("Error fetching allemployees:", err);
+                setError(err.response?.data?.message || "Failed to load tasks");
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        fetchAllEmployee();
+    }, []);
+    useEffect(() => {
+        const fetchAllTasks = async () => {
+            try {
+                setLoading(true);
+                setError("");
+                const res = await api.get("/tasks/");
+                setTotaltasks(res.data?.tasks || []);
+                console.log(res.data?.tasks || [])
+            } catch (err) {
+                console.error("Error fetching allemployees:", err);
+                setError(err.response?.data?.message || "Failed to load tasks");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllTasks();
+    }, []);
+
+    const status = useMemo(() => {
+        return totaltasks.reduce(
+            (acc, task) => {
+                if (task.status === "failed") {
+                    acc.failed++;
+                } else if (task.status === "new") {
+                    acc.new++;
+                } else if (task.status === "in-progress") {
+                    acc.inProgress++;
+                } else if (task.status === "completed") {
+                    acc.completed++;
+                }
+                return acc;
+            },
+            { failed: 0, new: 0, inProgress: 0, completed: 0 }
+        );
+    }, [totaltasks]);
     const stats = {
-        employees: 42,
-        tasks: 128,
-        newTasks: 12,
-        pending: 23,
-        completed: 86,
-        failed: 7,
+        employees: allemployees.length,
+        tasks: totaltasks.length,
+        newTasks: status.new,
+        pending: status.inProgress,
+        completed: status.completed,
+        failed: status.failed,
     };
 
-    const recentTasks = [
-        {
-            id: 1,
-            title: "Website Testing",
-            description:
-                "Test employee management website",
-            employee: "Sarthak",
-            priority: "High",
-            date: "20 Feb 2024",
-            status: "completed",
-        },
+    const recentTasks = useMemo(() => {
+        const fiveDaysAgo = new Date();
+        fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 
-        {
-            id: 2,
-            title: "Login Page Fix",
-            description:
-                "Fix reported login page issues",
-            employee: "Rahul",
-            priority: "Medium",
-            date: "19 Feb 2024",
-            status: "in-progress",
-        },
+        const filtered = totaltasks.filter(task => {
+            if (!task.createdAt) return true;
+            const createdDate = new Date(task.createdAt);
+            return createdDate >= fiveDaysAgo;
+        });
 
-        {
-            id: 3,
-            title: "Database Update",
-            description:
-                "Update employee database records",
-            employee: "Priya",
-            priority: "High",
-            date: "18 Feb 2024",
-            status: "new",
-        },
-
-        {
-            id: 4,
-            title: "UI Design",
-            description:
-                "Create dashboard UI components",
-            employee: "Aman",
-            priority: "Low",
-            date: "17 Feb 2024",
-            status: "failed",
-        },
-    ];
-
+        return filtered.length > 0 ? filtered : totaltasks;
+    }, [totaltasks]);
     const employees = [
         {
             id: 1,
@@ -114,50 +138,19 @@ export default function AdminDashboard() {
         },
     ];
 
-    const attentionItems = [
-        {
-            type: "overdue",
-            title: "Overdue Tasks",
-            description: "Tasks have passed their deadline",
-            count: 5,
-        },
-
-        {
-            type: "failed",
-            title: "Failed Tasks",
-            description: "Tasks require review",
-            count: 3,
-        },
-
-        {
-            type: "pending",
-            title: "Pending Tasks",
-            description: "Employees still have pending work",
-            count: 23,
-        },
-
-        {
-            type: "unaccepted",
-            title: "New Tasks",
-            description: "Tasks waiting to be accepted",
-            count: 4,
-        },
-    ];
-
     const handleLogout = () => {
         console.log("Admin logout");
 
-        // Example:
-        // localStorage.removeItem("token");
-        // navigate("/login");
+        
+        localStorage.removeItem("token");
+        navigate("/login");
     };
-
     return (
         <div className="min-h-screen bg-slate-50">
 
             {/* Header */}
             <AdminHeader
-                admin={admin}
+                admin={user}
                 onLogout={handleLogout}
             />
 
@@ -191,7 +184,8 @@ export default function AdminDashboard() {
 
                 {/* Employee Performance */}
                 <EmployeePerformance
-                    employees={employees}
+                    employees={allemployees}
+                    tasks={totaltasks}
                 />
 
             </main>

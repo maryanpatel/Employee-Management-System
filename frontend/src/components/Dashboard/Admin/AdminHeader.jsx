@@ -30,7 +30,7 @@ export default function AdminHeader({ admin, onLogout }) {
             </p>
 
             <h1 className="text-lg sm:text-xl font-bold text-slate-900">
-              {admin.name} 
+              {admin.fullname} 
             </h1>
            </div>
           </div>
@@ -97,7 +97,7 @@ export default function AdminHeader({ admin, onLogout }) {
 
                   <div className="px-3 py-3 border-b border-slate-100">
                     <p className="font-semibold text-slate-900">
-                      {admin.name}
+                      {admin.fullname}
                     </p>
 
                     <p className="text-xs text-slate-500 mt-1">

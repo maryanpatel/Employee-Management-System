@@ -44,6 +44,17 @@ async function getAllTasks(req, res) {
       });
       if (employee) filter.assignedTo = employee._id;
     }
+
+    if(!filter)
+    {
+      const tasks = await taskModel
+      .find({ assignedBy: req.user.id })
+      .populate("assignedTo", "employeeId department")
+      .populate("assignedBy", "fullname email")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({ count: tasks.length, tasks });
+    }
     const tasks = await taskModel
       .find(filter)
       .populate("assignedTo", "employeeId department")

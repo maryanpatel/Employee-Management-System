@@ -33,7 +33,7 @@ export default function Login() {
     if (name === "email") {
       setEmail(value);
     } else if (name === "password") {
-      setPassword(value);
+    setPassword(value);
     }
 
     // Clear field-specific error as user types

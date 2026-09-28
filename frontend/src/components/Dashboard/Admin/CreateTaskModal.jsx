@@ -1,4 +1,6 @@
 import { useState } from "react";
+import api from "../../../api/axiosInstance";
+// import { useAuth } from "../../context/AuthContext";
 import {
   X,
   ClipboardList,
@@ -8,16 +10,16 @@ import {
   Send,
 } from "lucide-react";
 
-export default function CreateTaskModal({ onClose }) {
+export default function CreateTaskModal({ onClose, onTaskCreated }) {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     employee: "",
-    priority: "Medium",
+    priority: "medium",
     dueDate: "",
   });
-
-  const employees = ["Sarthak", "Rahul", "Priya", "Aman"];
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -26,14 +28,31 @@ export default function CreateTaskModal({ onClose }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
-    console.log("Task Created:", formData);
+    setLoading(true);
+    try {
+      await api.post("/tasks/create", {
+        title: formData.title,
+        description: formData.description,
+        employeeId: formData.employee,
+        priority: formData.priority,
+        dueDate: formData.dueDate,
+      });
 
-    alert("Task created successfully!");
-
-    onClose();
+      if (onTaskCreated) {
+        onTaskCreated();
+      }
+      onClose();
+    } catch (err) {
+      const data = err.response?.data;
+      console.log("task create error ", data);
+      setErrorMessage(data?.message || "Failed to create task");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,6 +101,11 @@ export default function CreateTaskModal({ onClose }) {
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="p-6 sm:p-8 space-y-5">
+            {errorMessage && (
+              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl">
+                {errorMessage}
+              </div>
+            )}
 
             {/* Title */}
             <div>
@@ -129,21 +153,14 @@ export default function CreateTaskModal({ onClose }) {
                   Assign Employee
                 </label>
 
-                <select
+                <input
+                  type="text"
                   name="employee"
-                  value={formData.employee}
                   onChange={handleChange}
+                  placeholder="Employee id"
                   required
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none text-slate-700 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition"
-                >
-                  <option value="">Select employee</option>
-
-                  {employees.map((employee) => (
-                    <option key={employee} value={employee}>
-                      {employee}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               {/* Priority */}
@@ -159,9 +176,9 @@ export default function CreateTaskModal({ onClose }) {
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none text-slate-700 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition"
                 >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
                 </select>
               </div>
             </div>
@@ -196,10 +213,11 @@ export default function CreateTaskModal({ onClose }) {
 
             <button
               type="submit"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-sm active:scale-95 transition"
+              disabled={loading}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold text-sm shadow-sm active:scale-95 transition disabled:cursor-not-allowed"
             >
               <Send size={17} />
-              Create Task
+              {loading ? "Creating..." : "Create Task"}
             </button>
           </div>
         </form>

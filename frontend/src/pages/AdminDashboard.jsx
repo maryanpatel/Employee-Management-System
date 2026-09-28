@@ -21,41 +21,35 @@ export default function AdminDashboard() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
+    const fetchAllEmployee = async () => {
+        try {
+            const res = await api.get("/employee/all");
+            setAllemployees(res.data?.employees || []);
+        } catch (err) {
+            console.error("Error fetching employees:", err);
+            setError(err.response?.data?.message || "Failed to load employees");
+        }
+    };
+
+    const fetchAllTasks = async () => {
+        try {
+            const res = await api.get("/tasks/");
+            setTotaltasks(res.data?.tasks || []);
+        } catch (err) {
+            console.error("Error fetching tasks:", err);
+            setError(err.response?.data?.message || "Failed to load tasks");
+        }
+    };
+
     useEffect(() => {
-        const fetchAllEmployee = async () => {
-            try {
-                setLoading(true);
-                setError("");
-                const res = await api.get("/employee/all");
-                setAllemployees(res.data?.employees || []);
-                console.log(res.data?.employees || [])
-            } catch (err) {
-                console.error("Error fetching allemployees:", err);
-                setError(err.response?.data?.message || "Failed to load tasks");
-            } finally {
-                setLoading(false);
-            }
+        const loadDashboardData = async () => {
+            setLoading(true);
+            setError("");
+            await Promise.all([fetchAllEmployee(), fetchAllTasks()]);
+            setLoading(false);
         };
 
-        fetchAllEmployee();
-    }, []);
-    useEffect(() => {
-        const fetchAllTasks = async () => {
-            try {
-                setLoading(true);
-                setError("");
-                const res = await api.get("/tasks/");
-                setTotaltasks(res.data?.tasks || []);
-                console.log(res.data?.tasks || [])
-            } catch (err) {
-                console.error("Error fetching allemployees:", err);
-                setError(err.response?.data?.message || "Failed to load tasks");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAllTasks();
+        loadDashboardData();
     }, []);
 
     const status = useMemo(() => {
@@ -96,48 +90,6 @@ export default function AdminDashboard() {
 
         return filtered.length > 0 ? filtered : totaltasks;
     }, [totaltasks]);
-    const employees = [
-        {
-            id: 1,
-            name: "Sarthak",
-            email: "sarthak@company.com",
-            assigned: 12,
-            completed: 9,
-            pending: 2,
-            failed: 1,
-        },
-
-        {
-            id: 2,
-            name: "Rahul",
-            email: "rahul@company.com",
-            assigned: 18,
-            completed: 15,
-            pending: 3,
-            failed: 0,
-        },
-
-        {
-            id: 3,
-            name: "Priya",
-            email: "priya@company.com",
-            assigned: 10,
-            completed: 7,
-            pending: 2,
-            failed: 1,
-        },
-
-        {
-            id: 4,
-            name: "Aman",
-            email: "aman@company.com",
-            assigned: 8,
-            completed: 8,
-            pending: 0,
-            failed: 0,
-        },
-    ];
-
     const handleLogout = () => {
         console.log("Admin logout");
 
@@ -193,12 +145,14 @@ export default function AdminDashboard() {
             {showCreateTask && (
                 <CreateTaskModal
                     onClose={() => setShowCreateTask(false)}
+                    onTaskCreated={fetchAllTasks}
                 />
             )}
 
             {showAddEmployee && (
                 <AddEmployeeModal
                     onClose={() => setShowAddEmployee(false)}
+                    onEmployeeAdded={fetchAllEmployee}
                 />
             )}
 

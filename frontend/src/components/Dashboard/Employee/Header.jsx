@@ -1,181 +1,120 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   User,
   LogOut,
   ChevronDown,
   Settings,
   UserCircle,
+  LayoutDashboard,
 } from "lucide-react";
 
 export default function EmployeeHeader({ user, onLogout }) {
   const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-16 flex items-center justify-between">
 
-        <div className="h-20 flex items-center justify-between">
-
-          {/* Left - Greeting */}
+          {/* Left - Brand */}
           <div className="flex items-center gap-3">
-
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200">
-              <User
-                size={22}
-                className="text-white"
-              />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 flex items-center justify-center shadow-lg shadow-blue-200 overflow-hidden shrink-0">
+              {user?.profilePic ? (
+                <img
+                  src={user.profilePic}
+                  alt={user?.fullname || "Employee"}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <LayoutDashboard size={18} className="text-white" />
+              )}
             </div>
-
-            <div>
-              <p className="text-sm text-slate-500">
-                Hello,
-              </p>
-
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900">
-                {user?.fullname || user?.name || "Employee"} 
-              </h1>
-            </div>
-
+            <div className="hidden sm:block h-5 w-px bg-slate-200" />
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-600 hidden sm:inline">
+              My Dashboard
+            </span>
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
 
-            {/* Profile */}
+            {/* Profile Dropdown */}
             <div className="relative">
-
               <button
                 onClick={() => setShowProfile(!showProfile)}
-                className="
-                  flex items-center gap-2
-                  p-1.5
-                  rounded-xl
-                  hover:bg-slate-100
-                  transition
-                "
+                className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-100/80 transition-all active:scale-95 cursor-pointer"
               >
-
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <UserCircle
-                    size={25}
-                    className="text-blue-600"
-                  />
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden border border-blue-200 shrink-0">
+                  {user?.profilePic ? (
+                    <img
+                      src={user.profilePic}
+                      alt={user?.fullname || "Employee"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <UserCircle size={22} className="text-blue-600" />
+                  )}
                 </div>
-
+                <div className="hidden sm:block text-left">
+                  <p className="text-xs text-slate-400 leading-none">Hello,</p>
+                  <p className="text-sm font-semibold text-slate-800 leading-tight mt-0.5">
+                    {user?.fullname || user?.name || "Employee"}
+                  </p>
+                </div>
                 <ChevronDown
-                  size={16}
-                  className={`
-                    hidden sm:block text-slate-400
-                    transition-transform
-                    ${showProfile ? "rotate-180" : ""}
-                  `}
+                  size={15}
+                  className={`hidden sm:block text-slate-400 transition-transform duration-200 ${showProfile ? "rotate-180" : ""}`}
                 />
-
               </button>
 
-              {/* Profile Dropdown */}
+              {/* Dropdown */}
               {showProfile && (
-                <div className="
-                  absolute
-                  right-0
-                  top-14
-                  w-60
-                  bg-white
-                  border
-                  border-slate-200
-                  rounded-2xl
-                  shadow-xl
-                  shadow-slate-200/60
-                  p-2
-                ">
-
+                <div className="absolute right-0 top-12 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/60 p-2 z-50">
                   <div className="px-3 py-3 border-b border-slate-100">
-
                     <p className="font-semibold text-slate-900">
                       {user?.fullname || user?.name || "Employee"}
                     </p>
-
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">
                       {user?.email || ""}
                     </p>
-
                   </div>
 
                   <button
-                    className="
-                      w-full
-                      flex
-                      items-center
-                      gap-3
-                      px-3
-                      py-2.5
-                      mt-1
-                      text-sm
-                      text-slate-600
-                      hover:bg-slate-50
-                      rounded-xl
-                      transition
-                    "
+                    onClick={() => {
+                      setShowProfile(false);
+                      navigate("/profile");
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 mt-1 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl font-medium transition cursor-pointer"
                   >
-                    <UserCircle size={18} />
+                    <UserCircle size={16} />
                     My Profile
                   </button>
 
                   <button
-                    className="
-                      w-full
-                      flex
-                      items-center
-                      gap-3
-                      px-3
-                      py-2.5
-                      text-sm
-                      text-slate-600
-                      hover:bg-slate-50
-                      rounded-xl
-                      transition
-                    "
+                    onClick={() => {
+                      setShowProfile(false);
+                      navigate("/profile");
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 rounded-xl transition cursor-pointer"
                   >
-                    <Settings size={18} />
+                    <Settings size={16} />
                     Settings
                   </button>
-
                 </div>
               )}
-
             </div>
 
             {/* Logout */}
             <button
               onClick={onLogout}
-              className="
-                flex
-                items-center
-                gap-2
-                bg-red-50
-                hover:bg-red-100
-                text-red-600
-                border
-                border-red-100
-                px-3
-                sm:px-4
-                py-2.5
-                rounded-xl
-                text-sm
-                font-semibold
-                transition-all
-                active:scale-95
-              "
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 border border-red-100 transition cursor-pointer active:scale-95"
             >
-              <LogOut size={17} />
-
-              <span className="hidden sm:block">
-                Logout
-              </span>
+              <LogOut size={16} />
+              <span className="hidden sm:block">Logout</span>
             </button>
-
           </div>
-
         </div>
       </div>
     </header>

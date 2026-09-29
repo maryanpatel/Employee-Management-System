@@ -18,97 +18,51 @@ const icons = {
 
 const styles = {
   employees: {
-    bg: "bg-blue-50",
-    border: "border-blue-100",
-    text: "text-blue-700",
+    icon: "bg-blue-100 text-blue-600",
+    count: "text-blue-700",
+    badge: "bg-blue-50 text-blue-600 border-blue-100",
   },
-
   tasks: {
-    bg: "bg-indigo-50",
-    border: "border-indigo-100",
-    text: "text-indigo-700",
+    icon: "bg-indigo-100 text-indigo-600",
+    count: "text-indigo-700",
+    badge: "bg-indigo-50 text-indigo-600 border-indigo-100",
   },
-
   new: {
-    bg: "bg-sky-50",
-    border: "border-sky-100",
-    text: "text-sky-700",
+    icon: "bg-sky-100 text-sky-600",
+    count: "text-sky-700",
+    badge: "bg-sky-50 text-sky-600 border-sky-100",
   },
-
-  accepted: {
-    bg: "bg-amber-50",
-    border: "border-amber-100",
-    text: "text-amber-700",
-  },
-
   pending: {
-    bg: "bg-amber-50",
-    border: "border-amber-100",
-    text: "text-amber-700",
+    icon: "bg-amber-100 text-amber-600",
+    count: "text-amber-700",
+    badge: "bg-amber-50 text-amber-600 border-amber-100",
   },
-
-  "in-progress": {
-    bg: "bg-amber-100",
-    border: "border-amber-200",
-    text: "text-amber-700",
-  },
-
   completed: {
-    bg: "bg-emerald-50",
-    border: "border-emerald-100",
-    text: "text-emerald-700",
+    icon: "bg-emerald-100 text-emerald-600",
+    count: "text-emerald-700",
+    badge: "bg-emerald-50 text-emerald-600 border-emerald-100",
   },
-
   failed: {
-    bg: "bg-red-50",
-    border: "border-red-100",
-    text: "text-red-700",
+    icon: "bg-red-100 text-red-600",
+    count: "text-red-700",
+    badge: "bg-red-50 text-red-600 border-red-100",
   },
 };
 
-export default function AdminStatCard({
-  title,
-  count,
-  description,
-  type,
-}) {
+export default function AdminStatCard({ title, count, description, type }) {
   const Icon = icons[type] || icons.new;
-  const style = styles[type] || styles.new || {
-    bg: "bg-slate-50",
-    border: "border-slate-100",
-    text: "text-slate-700",
-  };
+  const style = styles[type] || styles.new;
 
   return (
-    <div
-      className={`
-        bg-gray-100
-        border
-        border-gray-100
-        rounded-2xl
-        p-5
-        transition-all
-        duration-200
-        hover:-translate-y-1
-        hover:shadow-lg
-        cursor-pointer
-      `}
-    >
+    <div className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+     
 
-      <div className="flex items-start justify-between">
-
-        <div>
-          <p className={`text-sm font-medium ${style.text}`}>
-            {title}
-          </p>
-
-          <p className="text-3xl font-bold text-slate-900 mt-2">
-            {count}
-          </p>
-        </div>
-
+      <div className="mt-1">
+        <p className="text-sm font-medium text-slate-500">{title}</p>
+        <p className={`text-3xl font-extrabold mt-3 tracking-tight ${style.count}`}>
+          {count}
+        </p>
       </div>
-
     </div>
   );
 }

@@ -1,90 +1,33 @@
-import {
-  CalendarDays,
-  ArrowRight,
-} from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
 export default function RecentTasks({ tasks = [] }) {
-
   const statusStyles = {
-    new: "bg-blue-100 text-blue-700",
-    "in-progress": "bg-amber-100 text-amber-700",
-    completed: "bg-emerald-100 text-emerald-700",
-    failed: "bg-red-100 text-red-700",
+    new: "bg-blue-100 text-blue-700 border-blue-200",
+    "in-progress": "bg-amber-100 text-amber-700 border-amber-200",
+    completed: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    failed: "bg-red-100 text-red-700 border-red-200",
   };
 
   return (
     <section className="mt-8">
-
       <div className="flex items-center justify-between mb-5">
-
         <div>
-          <h2 className="text-xl font-bold text-slate-900">
-            Recent Tasks
-          </h2>
-
-          <p className="text-sm text-slate-500 mt-1">
-            Latest task activity
-          </p>
+          <h2 className="text-xl font-bold text-slate-900">Recent Tasks</h2>
         </div>
-
-        <button className="
-          text-sm
-          font-semibold
-          text-blue-600
-          hover:text-blue-700
-        ">
-          View all
-        </button>
-
       </div>
 
-      <div className="
-        bg-white
-        border
-        border-slate-200
-        rounded-2xl
-        overflow-hidden
-        shadow-sm
-      ">
-
+      <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
         {/* Desktop Header */}
-        <div className="
-          hidden
-          md:grid
-          grid-cols-12
-          gap-4
-          px-5
-          py-4
-          bg-slate-50
-          border-b
-          border-slate-200
-          text-xs
-          font-semibold
-          text-slate-500
-        ">
-          <div className="col-span-4">
-            Task
-          </div>
-
-          <div className="col-span-2">
-            Employee
-          </div>
-
-          <div className="col-span-2">
-            Priority
-          </div>
-
-          <div className="col-span-2">
-            Date
-          </div>
-
-          <div className="col-span-2">
-            Status
-          </div>
+        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <div className="col-span-4">Task</div>
+          <div className="col-span-2">Employee</div>
+          <div className="col-span-2">Priority</div>
+          <div className="col-span-2">Date</div>
+          <div className="col-span-2">Status</div>
         </div>
 
-        {/* Scrollable Rows: Displays 4 tasks, scroll down to see more */}
-        <div className="max-h-[308px] overflow-y-auto divide-y divide-slate-100 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {/* Scrollable Rows */}
+        <div className="max-h-[308px] overflow-y-auto divide-y divide-slate-100 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {tasks && tasks.length > 0 ? (
             tasks.map((task) => {
               const employeeName =
@@ -113,38 +56,20 @@ export default function RecentTasks({ tasks = [] }) {
               return (
                 <div
                   key={task._id || task.id}
-                  className="
-                    px-5
-                    py-4
-                    hover:bg-slate-50
-                    transition
-                  "
+                  className="px-6 py-4 hover:bg-slate-50/60 transition-colors"
                 >
-
                   {/* Desktop */}
-                  <div className="
-                    hidden
-                    md:grid
-                    grid-cols-12
-                    gap-4
-                    items-center
-                  ">
-
+                  <div className="hidden md:grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-4">
-                      <p className="font-semibold text-slate-800">
-                        {task.title}
-                      </p>
-
+                      <p className="font-semibold text-slate-800 text-sm">{task.title}</p>
                       {task.description && (
-                        <p className="text-xs text-slate-500 mt-1 truncate">
+                        <p className="text-xs text-slate-400 mt-0.5 truncate">
                           {task.description}
                         </p>
                       )}
                     </div>
 
-                    <div className="col-span-2 text-sm text-slate-600">
-                      {employeeName}
-                    </div>
+                    <div className="col-span-2 text-sm text-slate-500">{employeeName}</div>
 
                     <div className="col-span-2">
                       <span className="text-xs font-semibold text-slate-600 capitalize">
@@ -153,86 +78,48 @@ export default function RecentTasks({ tasks = [] }) {
                     </div>
 
                     <div className="col-span-2">
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                        <CalendarDays size={14} />
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                        <CalendarDays size={13} />
                         {displayDate}
                       </div>
                     </div>
 
                     <div className="col-span-2">
                       <span
-                        className={`
-                          inline-flex
-                          px-2.5
-                          py-1
-                          rounded-full
-                          text-xs
-                          font-semibold
-                          ${statusStyles[task.status] || "bg-slate-100 text-slate-700"}
-                        `}
+                        className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border ${statusStyles[task.status] || "bg-slate-100 text-slate-600 border-slate-200"}`}
                       >
                         {task.status}
                       </span>
                     </div>
-
                   </div>
 
                   {/* Mobile */}
                   <div className="md:hidden">
-
                     <div className="flex items-start justify-between gap-3">
-
                       <div>
-                        <h3 className="font-semibold text-slate-900">
-                          {task.title}
-                        </h3>
-
-                        <p className="text-xs text-slate-500 mt-1">
-                          {employeeName}
-                        </p>
+                        <h3 className="font-semibold text-slate-900 text-sm">{task.title}</h3>
+                        <p className="text-xs text-slate-400 mt-0.5">{employeeName}</p>
                       </div>
-
                       <span
-                        className={`
-                          px-2.5
-                          py-1
-                          rounded-full
-                          text-xs
-                          font-semibold
-                          ${statusStyles[task.status] || "bg-slate-100 text-slate-700"}
-                        `}
+                        className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold border ${statusStyles[task.status] || "bg-slate-100 text-slate-600 border-slate-200"}`}
                       >
                         {task.status}
                       </span>
-
                     </div>
 
-                    {task.description && (
-                      <p className="text-sm text-slate-500 mt-3">
-                        {task.description}
-                      </p>
-                    )}
-
-                    <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
-
-                      <span className="capitalize">
-                        {task.priority || "Medium"} Priority
-                      </span>
-
+                    <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
+                      <span className="capitalize">{task.priority || "Medium"} Priority</span>
                       <span className="flex items-center gap-1">
-                        <CalendarDays size={13} />
+                        <CalendarDays size={12} />
                         {displayDate}
                       </span>
-
                     </div>
-
                   </div>
-
                 </div>
               );
             })
           ) : (
-            <div className="py-12 text-center text-slate-400 text-sm">
+            <div className="py-14 text-center text-slate-400 text-sm">
               No recent tasks found
             </div>
           )}

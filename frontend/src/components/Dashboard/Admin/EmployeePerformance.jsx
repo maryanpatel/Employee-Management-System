@@ -1,12 +1,6 @@
-import {
-  TrendingUp,
-  MoreHorizontal,
-} from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
-export default function EmployeePerformance({
-  employees = [],
-  tasks = [],
-}) {
+export default function EmployeePerformance({ employees = [], tasks = [] }) {
   const employeeList = (employees || []).map((employee, index) => {
     const name =
       employee.user?.fullname ||
@@ -24,265 +18,104 @@ export default function EmployeePerformance({
     );
 
     const assigned = employee.assigned ?? empTasks.length;
-    const completed =
-      empTasks.filter((t) => t.status === "completed").length;
-    const pending =
-      empTasks.filter((t) => t.status === "in-progress" || t.status === "new")
-        .length;
-    const failed =
-      empTasks.filter((t) => t.status === "failed").length;
+    const completed = empTasks.filter((t) => t.status === "completed").length;
+    const pending = empTasks.filter(
+      (t) => t.status === "in-progress" || t.status === "new"
+    ).length;
+    const failed = empTasks.filter((t) => t.status === "failed").length;
 
-    return {
-      id: empId,
-      name,
-      email,
-      initial: name.charAt(0).toUpperCase() || "E",
-      assigned,
-      completed,
-      pending,
-      failed,
-    };
+    const rate =
+      assigned > 0 ? Math.round((completed / assigned) * 100) : 0;
+
+    return { id: empId, name, email, initial: name.charAt(0).toUpperCase() || "E", assigned, completed, pending, failed, rate };
   });
 
   return (
-    <section className="mt-8">
-
+    <section className="mt-8 mb-10">
       <div className="flex items-center justify-between mb-5">
-
         <div>
-          <h2 className="text-xl font-bold text-slate-900">
-            Employee Performance
-          </h2>
-
-          <p className="text-sm text-slate-500 mt-1">
-            Overview of employee task performance
-          </p>
+          <h2 className="text-xl font-bold text-slate-900">Employee Performance</h2>
         </div>
-
-        <button className="
-          text-sm
-          font-semibold
-          text-blue-600
-          hover:text-blue-700
-        ">
-          View all
-        </button>
 
       </div>
 
-      <div className="
-        bg-white
-        border
-        border-slate-200
-        rounded-2xl
-        overflow-hidden
-        shadow-sm
-      ">
-
+      <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-sm">
         {/* Header */}
-        <div className="
-          hidden
-          md:grid
-          grid-cols-12
-          px-5
-          py-4
-          bg-slate-50
-          border-b
-          border-slate-200
-          text-xs
-          font-semibold
-          text-slate-500
-        ">
-
-          <div className="col-span-4">
-            Employee
-          </div>
-
-          <div className="col-span-2">
-            Assigned
-          </div>
-
-          <div className="col-span-2">
-            Completed
-          </div>
-
-          <div className="col-span-2">
-            Pending
-          </div>
-
-          <div className="col-span-2">
-            Failed
-          </div>
-
+        <div className="hidden md:grid grid-cols-12 px-6 py-4 bg-slate-50/70 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <div className="col-span-4">Employee</div>
+          <div className="col-span-2">Assigned</div>
+          <div className="col-span-2">Completed</div>
+          <div className="col-span-2">Pending</div>
+          <div className="col-span-2">Failed</div>
         </div>
 
-        {/* Employees */}
+        {/* Rows */}
         {employeeList.length > 0 ? (
           employeeList.map((employee) => (
             <div
               key={employee.id}
-              className="
-                px-5
-                py-4
-                border-b
-                border-slate-100
-                last:border-0
-                hover:bg-slate-50
-                transition
-              "
+              className="px-6 py-4 border-b border-slate-100 last:border-0 hover:bg-slate-50/60 transition-colors"
             >
-
               {/* Desktop */}
-              <div className="
-                hidden
-                md:grid
-                grid-cols-12
-                items-center
-              ">
-
+              <div className="hidden md:grid grid-cols-12 items-center gap-4">
                 <div className="col-span-4 flex items-center gap-3">
-
-                  <div className="
-                    w-10
-                    h-10
-                    rounded-full
-                    bg-blue-100
-                    text-blue-600
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                  ">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-700 flex items-center justify-center font-bold text-sm shrink-0 border border-indigo-100">
                     {employee.initial}
                   </div>
-
                   <div>
-                    <p className="font-semibold text-slate-800">
-                      {employee.name}
-                    </p>
-
-                    <p className="text-xs text-slate-500">
-                      {employee.email}
-                    </p>
+                    <p className="font-semibold text-slate-800 text-sm">{employee.name}</p>
+                    <p className="text-xs text-slate-400">{employee.email}</p>
                   </div>
-
                 </div>
 
-                <div className="col-span-2 text-sm text-slate-600">
-                  {employee.assigned}
+                <div className="col-span-2 text-sm text-slate-600 font-medium">{employee.assigned}</div>
+
+                <div className="col-span-2">
+                  <span className="text-sm font-semibold text-emerald-600">{employee.completed}</span>
                 </div>
 
-                <div className="col-span-2 text-sm font-semibold text-emerald-600">
-                  {employee.completed}
+                <div className="col-span-2">
+                  <span className="text-sm font-semibold text-amber-600">{employee.pending}</span>
                 </div>
 
-                <div className="col-span-2 text-sm font-semibold text-amber-600">
-                  {employee.pending}
+                <div className="col-span-2">
+                  <span className="text-sm font-semibold text-red-500">{employee.failed}</span>
                 </div>
-
-                <div className="col-span-2 text-sm font-semibold text-red-600">
-                  {employee.failed}
-                </div>
-
               </div>
 
               {/* Mobile */}
               <div className="md:hidden">
-
                 <div className="flex items-center gap-3">
-
-                  <div className="
-                    w-10
-                    h-10
-                    rounded-full
-                    bg-blue-100
-                    text-blue-600
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                  ">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-700 flex items-center justify-center font-bold text-sm shrink-0 border border-indigo-100">
                     {employee.initial}
                   </div>
-
-                  <div className="flex-1">
-                    <p className="font-semibold text-slate-800">
-                      {employee.name}
-                    </p>
-
-                    <p className="text-xs text-slate-500">
-                      {employee.email}
-                    </p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-slate-800 text-sm truncate">{employee.name}</p>
+                    <p className="text-xs text-slate-400 truncate">{employee.email}</p>
                   </div>
-
-                  <MoreHorizontal
-                    size={19}
-                    className="text-slate-400"
-                  />
-
+                  <MoreHorizontal size={18} className="text-slate-300 shrink-0" />
                 </div>
 
-                <div className="
-                  grid
-                  grid-cols-4
-                  gap-2
-                  mt-4
-                ">
-
-                  <div>
-                    <p className="text-xs text-slate-400">
-                      Assigned
-                    </p>
-
-                    <p className="font-semibold text-slate-700">
-                      {employee.assigned}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-slate-400">
-                      Completed
-                    </p>
-
-                    <p className="font-semibold text-emerald-600">
-                      {employee.completed}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-slate-400">
-                      Pending
-                    </p>
-
-                    <p className="font-semibold text-amber-600">
-                      {employee.pending}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-slate-400">
-                      Failed
-                    </p>
-
-                    <p className="font-semibold text-red-600">
-                      {employee.failed}
-                    </p>
-                  </div>
-
+                <div className="grid grid-cols-4 gap-2 mt-4">
+                  {[
+                    { label: "Assigned", value: employee.assigned, color: "text-slate-700" },
+                    { label: "Done", value: employee.completed, color: "text-emerald-600" },
+                    { label: "Pending", value: employee.pending, color: "text-amber-600" },
+                    { label: "Failed", value: employee.failed, color: "text-red-500" },
+                  ].map((item) => (
+                    <div key={item.label}>
+                      <p className="text-xs text-slate-400">{item.label}</p>
+                      <p className={`font-bold mt-0.5 ${item.color}`}>{item.value}</p>
+                    </div>
+                  ))}
                 </div>
-
               </div>
-
             </div>
           ))
         ) : (
-          <div className="py-10 text-center text-slate-400 text-sm">
-            No employees found
-          </div>
+          <div className="py-12 text-center text-slate-400 text-sm">No employees found</div>
         )}
-
       </div>
-
     </section>
   );
 }

@@ -1,5 +1,3 @@
-const EmployeeProfile = () => {
-  return <div>Employee Profile Page (Coming Soon)</div>;
-};
+import ProfilePage from "./ProfilePage";
 
-export default EmployeeProfile;
+export default ProfilePage;

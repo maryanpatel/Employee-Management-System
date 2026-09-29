@@ -1,10 +1,11 @@
 const userModel = require("../model/User-modal");
+const employeeModel = require("../model/Employee-modal");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 async function registerUser(req, res) {
   try {
-    const { fullname, email, phonenumber, password, role } = req.body;
+    const { fullname, email, phonenumber, password, role, profilePic } = req.body;
 
     const isuserAlreadyExists = await userModel.findOne({ email: email });
 
@@ -21,6 +22,7 @@ async function registerUser(req, res) {
       phonenumber,
       password: hash,
       role,
+      profilePic: profilePic || "",
     });
 
     const token = jwt.sign(
@@ -38,7 +40,14 @@ async function registerUser(req, res) {
 
     res.status(201).json({
       message: "User created successfully",
-      user: { id: admin._id, fullname: admin.fullname, email: admin.email, role: admin.role },
+      user: {
+        id: admin._id,
+        fullname: admin.fullname,
+        email: admin.email,
+        phonenumber: admin.phonenumber,
+        role: admin.role,
+        profilePic: admin.profilePic || "",
+      },
       token,
     });
   } catch (err) {
@@ -81,7 +90,14 @@ async function userLogin(req, res) {
 
     res.status(200).json({
       message: "Login successful",
-      user: { id: user._id, fullname: user.fullname, email: user.email, role: user.role },
+      user: {
+        id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        phonenumber: user.phonenumber,
+        role: user.role,
+        profilePic: user.profilePic || "",
+      },
       token,
     });
   } catch (err) {
@@ -117,10 +133,62 @@ async function getCurrentuser(req, res) {
         message: "user not found",
       });
     }
-    res.status(200).json({ user });
+
+    let employee = null;
+    if (user.role === "employee") {
+      employee = await employeeModel.findOne({ user: user._id });
+    }
+
+    res.status(200).json({ user, employee });
   } catch (err) {
     return res.status(500).json({
       message: "Something went wrong",
+      error: err.message,
+    });
+  }
+}
+
+async function updateUserProfile(req, res) {
+  try {
+    const { fullname, phonenumber, profilePic } = req.body;
+    const updateData = {};
+
+    if (fullname !== undefined) updateData.fullname = fullname.trim();
+    if (phonenumber !== undefined) updateData.phonenumber = phonenumber;
+    if (profilePic !== undefined) updateData.profilePic = profilePic;
+
+    const updatedUser = await userModel
+      .findByIdAndUpdate(req.user.id, updateData, {
+        new: true,
+        runValidators: true,
+      })
+      .select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let employee = null;
+    if (updatedUser.role === "employee") {
+      employee = await employeeModel.findOne({ user: updatedUser._id });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        id: updatedUser._id,
+        fullname: updatedUser.fullname,
+        email: updatedUser.email,
+        phonenumber: updatedUser.phonenumber,
+        role: updatedUser.role,
+        profilePic: updatedUser.profilePic || "",
+      },
+      employee,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Failed to update profile",
+      error: err.message,
     });
   }
 }
@@ -150,10 +218,12 @@ async function changePassword(req, res) {
     });
   }
 }
+
 module.exports = {
   registerUser,
   userLogin,
   userLogout,
   getCurrentuser,
+  updateUserProfile,
   changePassword,
 };

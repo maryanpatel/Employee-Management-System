@@ -6,6 +6,7 @@ import TaskDetailView from "../components/Dashboard/Employee/TaskDetailView";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
+import { Briefcase } from "lucide-react";
 
 export default function EmployeeDashboard() {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -31,7 +32,6 @@ export default function EmployeeDashboard() {
         setLoading(false);
       }
     };
-
     fetchMyTasks();
   }, []);
 
@@ -58,17 +58,14 @@ export default function EmployeeDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50/30 text-slate-800 antialiased">
       {/* Header */}
-      <EmployeeHeader
-        user={user || {}}
-        onLogout={handleLogout}
-      />
+      <EmployeeHeader user={user || {}} onLogout={handleLogout} />
 
       {/* Main */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {selectedTask ? (
-          /* View Task Detail View */
+          /* Task Detail View */
           <TaskDetailView
             task={selectedTask}
             onBack={() => setSelectedTask(null)}
@@ -76,24 +73,64 @@ export default function EmployeeDashboard() {
           />
         ) : (
           <>
-            {/* Welcome */}
-            <div className="mb-7">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
-                Welcome back, {user?.fullname || user?.name || "Employee"}
-              </h2>
-              <p className="text-slate-500 mt-2">
-                Here's an overview of your tasks.
-              </p>
+            {/* Welcome Banner */}
+            <div className="relative bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden mb-8">
+              {/* Gradient accent strip */}
+              <div className="h-18 sm:h-22 w-full bg-gradient-to-r from-blue-700 via-sky-600 to-teal-600 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute -top-8 -left-8 w-48 h-48 rounded-full bg-white blur-2xl" />
+                  <div className="absolute -bottom-4 right-10 w-56 h-56 rounded-full bg-white blur-3xl" />
+                </div>
+        
+              </div>
+
+              {/* Identity row — avatar half-overlaps the strip */}
+              <div className="px-6 sm:px-10 pb-6 pt-2 relative z-10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-10">
+                  <div className="relative w-25 h-25 rounded-2xl p-1 bg-white shadow-xl ring-4 ring-white overflow-hidden shrink-0">
+                    {user?.profilePic ? (
+                      <img
+                        src={user.profilePic}
+                        alt={user.fullname}
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 flex items-center justify-center text-white font-extrabold text-[30px]">
+                        {(user?.fullname || user?.name || "E").charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 pb-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                        {user?.fullname || user?.name || "Employee"}
+                      </h1>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-400 mt-0.5">
+                      Here's an overview of your tasks today.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Loading / Error / Data */}
-            {loading ? (
-              <div className="py-16 text-center text-slate-500 font-medium">
-                Loading your tasks...
-              </div>
-            ) : error ? (
-              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl mb-6">
+            {/* Error */}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl mb-6 text-sm">
                 {error}
+              </div>
+            )}
+
+            {/* Loading */}
+            {loading ? (
+              <div className="py-20 text-center">
+                <div className="w-10 h-10 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mx-auto" />
+                <p className="text-sm text-slate-400 font-medium mt-4">Loading your tasks...</p>
               </div>
             ) : (
               <>

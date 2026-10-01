@@ -7,27 +7,9 @@ import {
 import TaskStatusBadge from "./TaskStatusBadge";
 
 export default function AdminTaskTable({ tasks }) {
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-
-      {/* Header */}
-      <div className="px-5 sm:px-6 py-5 border-b border-slate-100">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900">
-              All Tasks
-            </h2>
-
-            <p className="text-sm text-slate-500 mt-1">
-              Manage and monitor all employee tasks
-            </p>
-          </div>
-
-          <span className="text-sm text-slate-500">
-            {tasks.length} tasks
-          </span>
-        </div>
-      </div>
 
       {/* Desktop Table */}
       <div className="hidden lg:block overflow-x-auto">
@@ -72,9 +54,6 @@ export default function AdminTaskTable({ tasks }) {
                     {task.title}
                   </p>
 
-                  <p className="text-xs text-slate-500 mt-1 max-w-xs truncate">
-                    {task.description}
-                  </p>
                 </td>
 
                 <td className="px-6 py-4">
@@ -87,29 +66,45 @@ export default function AdminTaskTable({ tasks }) {
                     </div>
 
                     <span className="text-sm font-medium text-slate-700">
-                      {task.employee}
+                      {task.
+                        assignedTo
+                        .user.fullname}
                     </span>
                   </div>
                 </td>
 
                 <td className="px-6 py-4">
                   <span
-                    className={`text-xs font-semibold ${
-                      task.priority === "High"
-                        ? "text-red-600"
-                        : task.priority === "Medium"
+                    className={`text-xs font-semibold ${task.priority === "high"
+                      ? "text-red-600"
+                      : task.priority === "medium"
                         ? "text-amber-600"
                         : "text-emerald-600"
-                    }`}
+                      }`}
                   >
-                    {task.priority}
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                   </span>
                 </td>
 
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2 text-sm text-slate-600">
                     <CalendarDays size={15} />
-                    {task.date}
+                    {
+
+                      task.date ||
+                      (task.dueDate
+                        ? new Date(task.dueDate).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
+                        : task.createdAt
+                          ? new Date(task.createdAt).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                          : "No date") }
                   </div>
                 </td>
 
@@ -163,10 +158,6 @@ export default function AdminTaskTable({ tasks }) {
                 <h3 className="font-semibold text-slate-900">
                   {task.title}
                 </h3>
-
-                <p className="text-xs text-slate-500 mt-1">
-                  {task.description}
-                </p>
               </div>
 
               <TaskStatusBadge status={task.status} />
@@ -186,13 +177,12 @@ export default function AdminTaskTable({ tasks }) {
               </span>
 
               <span
-                className={`font-semibold ${
-                  task.priority === "High"
-                    ? "text-red-600"
-                    : task.priority === "Medium"
+                className={`font-semibold ${task.priority === "High"
+                  ? "text-red-600"
+                  : task.priority === "Medium"
                     ? "text-amber-600"
                     : "text-emerald-600"
-                }`}
+                  }`}
               >
                 {task.priority}
               </span>

@@ -59,7 +59,7 @@ export default function AdminStatCard({ title, count, description, type }) {
 
       <div className="mt-1">
         <p className="text-sm font-medium text-slate-500">{title}</p>
-        <p className={`text-3xl font-extrabold mt-3 tracking-tight ${style.count}`}>
+        <p className={`text-2xl font-extrabold mt-3 tracking-tight ${style.count}`}>
           {count}
         </p>
       </div>

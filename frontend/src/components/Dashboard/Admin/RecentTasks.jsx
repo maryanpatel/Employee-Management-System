@@ -72,9 +72,16 @@ export default function RecentTasks({ tasks = [] }) {
                     <div className="col-span-2 text-sm text-slate-500">{employeeName}</div>
 
                     <div className="col-span-2">
-                      <span className="text-xs font-semibold text-slate-600 capitalize">
-                        {task.priority || "Medium"}
-                      </span>
+                       <span
+                    className={`text-xs font-semibold ${task.priority === "high"
+                      ? "text-red-600"
+                      : task.priority === "medium"
+                        ? "text-amber-600"
+                        : "text-emerald-600"
+                      }`}
+                  >
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                  </span>
                     </div>
 
                     <div className="col-span-2">

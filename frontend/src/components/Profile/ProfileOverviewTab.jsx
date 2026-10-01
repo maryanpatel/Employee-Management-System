@@ -12,47 +12,42 @@ import {
 } from "lucide-react";
 import StatCard from "../Dashboard/Employee/StatCard";
 // ─── Admin stat cards ───────────────────────────────────────────────────────
-function AdminStats() {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-      <AdminStatCard
-        icon={<Shield size={24} />}
-        iconBg="bg-indigo-100 text-indigo-600"
-        label="Access Role"
-        value="Administrator"
-      />
-      <AdminStatCard
-        icon={<Building size={24} />}
-        iconBg="bg-emerald-100 text-emerald-600"
-        label="Management"
-        value="Organization"
+// function AdminStats() {
+//   return (
+//     <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+//       {/*  */}
+//       <AdminStatCard
+//         icon={<Building size={24} />}
+//         iconBg="bg-emerald-100 text-emerald-600"
+//         label="Management"
+//         value="Organization"
     
-      />
-      <AdminStatCard
-        icon={<Sparkles size={24} />}
-        iconBg="bg-purple-100 text-purple-600"
-        label="Status"
-        value="Verified & Active"
-        valueColor="text-emerald-600"
+//       />
+//       <AdminStatCard
+//         icon={<Sparkles size={24} />}
+//         iconBg="bg-purple-100 text-purple-600"
+//         label="Status"
+//         value="Verified & Active"
+//         valueColor="text-emerald-600"
         
-      />
-    </div>
-  );
-}
+//       />
+//     </div>
+//   );
+// }
 
-function AdminStatCard({ icon, iconBg, label, value, valueColor = "text-slate-900", sub }) {
-  return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-xs flex items-center gap-4">
-      <div className={`w-12 h-12 rounded-3xl flex items-center justify-center ${iconBg}`}>
-        {icon}
-      </div>
-      <div>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
-        <p className={`text-xl font-bold mt-0.5 ${valueColor}`}>{value}</p>
-      </div>
-    </div>
-  );
-}
+// function AdminStatCard({ icon, iconBg, label, value, valueColor = "text-slate-900", sub }) {
+//   return (
+//     <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-xs flex items-center gap-4">
+//       <div className={`w-12 h-12 rounded-3xl flex items-center justify-center ${iconBg}`}>
+//         {icon}
+//       </div>
+//       <div>
+//         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
+//         <p className={`text-xl font-bold mt-0.5 ${valueColor}`}>{value}</p>
+//       </div>
+//     </div>
+//   );
+// }
 
 // ─── Employee task stats ─────────────────────────────────────────────────────
 function EmployeeTaskStats({ taskStats }) {
@@ -123,7 +118,7 @@ function PersonalInfoCard({ profile, authUser, copiedId,  onEditTab }) {
         </div>
         <InfoRow label="Phone Number" value={profile?.phonenumber || "Not provided"} />
         <div className="py-4 flex justify-between items-center text-sm">
-          <span className="text-slate-500 font-medium">Status</span>
+          <span className="text-slate-500 font-medium">About</span>
           <div className="flex items-center gap-2 font-mono text-xs text-slate-600">
             <span className="truncate max-w-[140px]">{profile?.status || profile?.id || "—"}</span>
             <button
@@ -237,7 +232,7 @@ export default function ProfileOverviewTab({
 }) {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      {isAdmin ? <AdminStats /> : <EmployeeTaskStats taskStats={taskStats} />}
+      {isAdmin ? "" : <EmployeeTaskStats taskStats={taskStats} />}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <PersonalInfoCard

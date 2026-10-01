@@ -30,14 +30,6 @@ export default function TaskOverview({ task }) {
           {task.priority || "Medium"} Priority
         </span>
 
-        {dueInfo && (
-          <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${dueInfo.color}`}
-          >
-            <dueInfo.icon size={13} />
-            {dueInfo.label}
-          </span>
-        )}
       </div>
 
       {/* Task Title */}

@@ -112,7 +112,7 @@ export default function EmployeeDashboard() {
                       </span>
                     </div>
                     <p className="text-sm text-slate-400 mt-0.5">
-                      Here's an overview of your tasks today.
+                      Hello,Here's an overview of your tasks today.
                     </p>
                   </div>
                 </div>

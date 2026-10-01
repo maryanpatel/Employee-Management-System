@@ -1,77 +1,30 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect} from "react";
 import { ClipboardList, ArrowLeft } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation  } from "react-router-dom";
 
 import TaskFilters from "../components/Tasklist/TaskFilters";
 import AdminTaskTable from "../components/Tasklist/AdminTaskTable";
 
 export default function AdminTasks() {
-  // const navigate = useNavigate();
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [priority, setPriority] = useState("all");
   const [employee, setEmployee] = useState("all");
+  const [totaltasks, setTotaltasks] = useState([])
+  const [allemployees, setAllemployees] = useState([])
 
-  const tasks = [
-    {
-      id: 1,
-      title: "Website Testing",
-      description: "Test the complete website and report bugs.",
-      employee: "Sarthak",
-      priority: "High",
-      date: "20 Feb 2024",
-      status: "completed",
-    },
-    {
-      id: 2,
-      title: "Login Page Fix",
-      description: "Fix authentication and login validation issues.",
-      employee: "Rahul",
-      priority: "Medium",
-      date: "19 Feb 2024",
-      status: "in-progress",
-    },
-    {
-      id: 3,
-      title: "Database Update",
-      description: "Update employee database records.",
-      employee: "Priya",
-      priority: "High",
-      date: "18 Feb 2024",
-      status: "new",
-    },
-    {
-      id: 4,
-      title: "UI Design",
-      description: "Create a modern dashboard interface.",
-      employee: "Aman",
-      priority: "Low",
-      date: "17 Feb 2024",
-      status: "failed",
-    },
-    {
-      id: 5,
-      title: "API Integration",
-      description: "Integrate employee task management APIs.",
-      employee: "Sarthak",
-      priority: "High",
-      date: "21 Feb 2024",
-      status: "in-progress",
-    },
-    {
-      id: 6,
-      title: "Mobile Responsive Design",
-      description: "Make the dashboard responsive for mobile devices.",
-      employee: "Priya",
-      priority: "Medium",
-      date: "22 Feb 2024",
-      status: "in-progress",
-    },
-  ];
+ useEffect(() => {
+    const tasks = location.state?.totaltasks || [];
+    const employees = location.state?.allemployees || [];
+    setTotaltasks(tasks);
+    setAllemployees(employees)
+    console.log("in useeffect")
+  }, [location.state]);
 
   const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
+    return totaltasks.filter((task) => {
       const matchesSearch =
         task.title
           .toLowerCase()
@@ -79,7 +32,7 @@ export default function AdminTasks() {
         task.description
           .toLowerCase()
           .includes(search.toLowerCase()) ||
-        task.employee
+        task.assignedTo.user.fullname
           .toLowerCase()
           .includes(search.toLowerCase());
 
@@ -92,7 +45,7 @@ export default function AdminTasks() {
 
       const matchesEmployee =
         employee === "all" ||
-        task.employee === employee;
+        task.assignedTo.user.fullname === employee;
 
       return (
         matchesSearch &&
@@ -102,7 +55,6 @@ export default function AdminTasks() {
       );
     });
   }, [search, status, priority, employee]);
-
   return (
     <div className="min-h-screen bg-slate-50">
 
@@ -111,7 +63,7 @@ export default function AdminTasks() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
           <button
-            // onClick={() => navigate("/admin/dashboard")}
+            onClick={() => navigate("/admin/dashboard")}
             className="
               flex
               items-center
@@ -129,22 +81,10 @@ export default function AdminTasks() {
           </button>
 
           <div className="flex items-center gap-4">
-
-            <div className="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center">
-              <ClipboardList
-                size={25}
-                className="text-indigo-600"
-              />
-            </div>
-
             <div>
               <h1 className="text-2xl font-bold text-slate-900">
                 All Tasks
               </h1>
-
-              <p className="text-sm text-slate-500 mt-1">
-                View, search and manage all employee tasks
-              </p>
             </div>
 
           </div>
@@ -164,10 +104,11 @@ export default function AdminTasks() {
           setPriority={setPriority}
           employee={employee}
           setEmployee={setEmployee}
+          allemployees = {allemployees}
         />
 
         <div className="mt-6">
-          <AdminTaskTable tasks={filteredTasks} />
+          <AdminTaskTable tasks={filteredTasks?.length > 0 ? filteredTasks : totaltasks} />
         </div>
 
       </main>

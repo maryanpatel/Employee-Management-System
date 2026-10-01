@@ -37,7 +37,7 @@ export default function ProfileBanner({
 
       {/* Avatar + Identity Row */}
       <div className="px-6 sm:px-10 pb-8 pt-2 relative">
-        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-6 -mt-16 sm:-mt-20">
+        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-6 -mt-15 sm:-mt-18">
           {/* Avatar */}
           <div className="relative group">
             <div className="w-29 h-29 sm:w-32 sm:h-32 rounded-3xl p-1 bg-white shadow-xl ring-4 ring-white overflow-hidden transition-transform duration-300 group-hover:scale-[1.02]">
@@ -62,7 +62,7 @@ export default function ProfileBanner({
           </div>
 
           {/* Identity */}
-          <div className="flex-1 text-center sm:text-left mt-2 sm:mt-0">
+          <div className="flex-1 text-center sm:text-left mt-3 sm:mt-0">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 {profile?.fullname || authUser?.fullname || "User"}
@@ -78,15 +78,6 @@ export default function ProfileBanner({
                 <Mail size={15} className="text-slate-400" />
                 {profile?.email || authUser?.email || "No email"}
               </span>
-              {profile?.phonenumber && (
-                <>
-                  <span className="text-slate-300">•</span>
-                  <span className="flex items-center gap-1.5">
-                    <Phone size={15} className="text-slate-400" />
-                    {profile.phonenumber}
-                  </span>
-                </>
-              )}
             </p>
           </div>
 

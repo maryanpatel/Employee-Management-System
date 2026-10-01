@@ -95,7 +95,7 @@ async function updateEmployee(req, res) {
   try {
     const employee = req.employee;
 
-    const { fullname, email, phonenumber, department, employeeId, status } =
+    const { fullname, email, phonenumber, department, designation, employeeId, status } =
       req.body;
 
     const userUpdate = {};
@@ -191,8 +191,8 @@ async function deleteEmployee(req, res) {
       employee:{
         id: employee._id,
         employeeId: employee.employeeId,
-        fullname: employee.user?.fullneme,
-        email: employee.user?.emial
+        fullname: employee.user?.fullname,
+        email: employee.user?.email
       }
 
     })

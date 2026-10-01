@@ -11,12 +11,48 @@ import AdminTasks from "./pages/AdminTasks";
 import ViewTask from "./pages/ViewTask";
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuth } from "./context/AuthContext";
+
+// Redirect root ("/") based on whether user is logged in
+const RootRedirect = () => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  return (
+    <Navigate
+      to={user.role === "admin" ? "/admin/dashboard" : "/employee/dashboard"}
+      replace
+    />
+  );
+};
+
+// Redirect already-logged-in users away from /login
+const GuestRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (user) {
+    return (
+      <Navigate
+        to={user.role === "admin" ? "/admin/dashboard" : "/employee/dashboard"}
+        replace
+      />
+    );
+  }
+  return children;
+};
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<RootRedirect />} />
+      <Route
+        path="/login"
+        element={
+          <GuestRoute>
+            <Login />
+          </GuestRoute>
+        }
+      />
       <Route path="/unauthorized" element={<Unauthorized />} />
 
       <Route

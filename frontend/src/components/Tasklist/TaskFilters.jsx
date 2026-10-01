@@ -9,6 +9,7 @@ export default function TaskFilters({
   setPriority,
   employee,
   setEmployee,
+  allemployees,
 }) {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
@@ -102,9 +103,9 @@ export default function TaskFilters({
           "
         >
           <option value="all">All Priority</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
         </select>
 
         {/* Employee */}
@@ -128,10 +129,11 @@ export default function TaskFilters({
           "
         >
           <option value="all">All Employees</option>
-          <option value="Sarthak">Sarthak</option>
-          <option value="Rahul">Rahul</option>
-          <option value="Priya">Priya</option>
-          <option value="Aman">Aman</option>
+          {allemployees.map((employee, index) => (
+            <option key={index} value={employee.user.fullname}>
+              {employee.user.fullname}
+            </option>
+          ))}
         </select>
 
       </div>

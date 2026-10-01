@@ -14,9 +14,6 @@ export default function EditProfileTab({
     <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xs max-w-3xl mx-auto animate-in fade-in duration-300">
       <div className="pb-6 border-b border-slate-100 mb-8">
         <h2 className="text-xl font-bold text-slate-900">Edit Personal Information</h2>
-        <p className="text-sm text-slate-500 mt-1">
-          Keep your profile details up to date across the platform.
-        </p>
       </div>
 
       <form onSubmit={onSave} className="space-y-6">

@@ -92,16 +92,7 @@ export default function AdminHeader({ admin, onLogout }) {
                     My Profile
                   </button>
 
-                  <button
-                    onClick={() => {
-                      setShowProfile(false);
-                      navigate("/profile");
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 rounded-xl transition cursor-pointer"
-                  >
-                    <Settings size={16} />
-                    Settings
-                  </button>
+                  
                 </div>
               )}
             </div>

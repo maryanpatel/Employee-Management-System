@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
@@ -13,7 +13,7 @@ import {
   CheckCircle2,
   Loader2,
   AlertCircle,
-} from "lucide-react";
+} from "lucide-react";  
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,19 +21,28 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const [fieldErrors, setFieldErrors] = useState({});
-  const { login } = useAuth();
+  const { user: authUser, login } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    if (authUser) {
+      if (authUser.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/employee/dashboard", { replace: true });
+      }
+    }
+  }, [authUser, navigate]);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "email") {
       setEmail(value);
     } else if (name === "password") {
-    setPassword(value);
+      setPassword(value);
     }
 
     // Clear field-specific error as user types

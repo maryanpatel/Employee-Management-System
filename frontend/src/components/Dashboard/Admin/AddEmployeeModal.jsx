@@ -107,9 +107,7 @@ export default function AddEmployeeModal({ onClose, onEmployeeAdded }) {
                 Add Employee
               </h2>
 
-              <p className="text-sm text-slate-500 mt-0.5">
-                Create a new employee account
-              </p>
+              
             </div>
 
           </div>
@@ -253,7 +251,7 @@ export default function AddEmployeeModal({ onClose, onEmployeeAdded }) {
                     transition
                   "
                 />
-                <p className="text-xs text-slate-400 mt-1">10-digit number starting with 6, 7, 8, or 9</p>
+                
               </div>
 
               {/* Department */}
@@ -328,9 +326,6 @@ export default function AddEmployeeModal({ onClose, onEmployeeAdded }) {
                   transition
                 "
               />
-              <p className="text-xs text-slate-400 mt-1">
-                Min 8 characters, with at least 1 uppercase, 1 lowercase, 1 number, and 1 special symbol (@$!%*?&)
-              </p>
             </div>
 
           </div>

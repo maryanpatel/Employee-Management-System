@@ -14,9 +14,7 @@ export default function SecurityTab({ onChangePassword, saving, message }) {
     <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xs max-w-3xl mx-auto animate-in fade-in duration-300">
       <div className="pb-6 border-b border-slate-100 mb-8">
         <h2 className="text-xl font-bold text-slate-900">Change Password</h2>
-        <p className="text-sm text-slate-500 mt-1">
-          Protect your account with a secure password containing letters, numbers, and symbols.
-        </p>
+        
       </div>
 
       {/* Feedback message */}
@@ -65,15 +63,6 @@ export default function SecurityTab({ onChangePassword, saving, message }) {
           placeholder="Repeat new password"
         />
 
-        {/* Hints */}
-        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/60 text-xs text-slate-500 space-y-1">
-          <p className="font-semibold text-slate-700">Security Best Practices:</p>
-          <ul className="list-disc list-inside space-y-0.5 pl-1">
-            <li>Use at least 6 characters (longer is stronger).</li>
-            <li>Include numbers or special symbols for heightened security.</li>
-            <li>Never reuse passwords across different company portals.</li>
-          </ul>
-        </div>
 
         <div className="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
           <button

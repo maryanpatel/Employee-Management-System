@@ -83,9 +83,17 @@ export default function AdminDashboard() {
     return filtered.length > 0 ? filtered : totaltasks;
   }, [totaltasks]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      if (logout) {
+        await logout();
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    } finally {
+      navigate("/login");
+    }
   };
 
   return (
@@ -163,6 +171,8 @@ export default function AdminDashboard() {
             <QuickActions
               onCreateTask={() => setShowCreateTask(true)}
               onAddEmployee={() => setShowAddEmployee(true)}
+              totaltasks={totaltasks}
+              allemployees={ allemployees }
             />
 
             {/* Recent Tasks */}
